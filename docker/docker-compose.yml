@@ -1,0 +1,26 @@
+
+# Optional local PostgreSQL for development/production-parity testing.
+# The backend defaults to SQLite (zero setup) — this is only needed when
+# you want to test against Postgres before deploying.
+#
+# Usage (from this docker/ directory):
+#   docker compose up -d
+#   Then set DATABASE_URL in backend/.env to:
+#   postgresql+psycopg2://shoexpress:shoexpress_dev_password@localhost:5432/shoexpress
+#   and re-run: alembic upgrade head
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: shoexpress
+      POSTGRES_PASSWORD: shoexpress_dev_password
+      POSTGRES_DB: shoexpress
+    ports:
+      - "5432:5432"
+    volumes:
+      - shoexpress_pgdata:/var/lib/postgresql/data
+
+volumes:
+  shoexpress_pgdata:
