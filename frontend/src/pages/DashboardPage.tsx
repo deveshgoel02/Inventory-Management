@@ -95,7 +95,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-slate-200 p-4 mt-4">
+      <div className="bg-white rounded-lg border border-slate-200 p-4 mt-4 overflow-x-auto">
         <div className="text-sm font-semibold text-slate-800 mb-3">Deadlines Needing Attention</div>
         <table className="w-full text-sm">
           <thead>
