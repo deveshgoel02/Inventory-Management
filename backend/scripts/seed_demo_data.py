@@ -24,6 +24,7 @@ from app.core.database import Base, SessionLocal, engine
 from app.models.catalog import Brand, Category, Product, ProductVariant
 from app.models.deadlines import StockDeadline
 from app.models.enums import TransactionType
+from app.models.inventory import InventoryBatch, InventoryTransaction
 from app.models.purchasing import Supplier
 from app.models.sales import Customer, Sale, SaleItem
 from app.models.warehouse import Warehouse
@@ -165,7 +166,6 @@ def seed():
                 # Opening batch sized so stock never goes negative through the
                 # whole simulated history (see module docstring).
                 opening_date = start_date - datetime.timedelta(days=1)
-                from app.models.inventory import InventoryBatch
 
                 batch = InventoryBatch(
                     variant_id=variant.id,
@@ -196,28 +196,41 @@ def seed():
                 )
                 variant_batch_log.append((variant, batch, opening_date))
 
+                # Batch-build every Sale for this variant's history and insert them
+                # in one flush (rather than one flush per sale-day) — over a remote
+                # Postgres connection (Neon), a per-row round trip for thousands of
+                # historical rows is the dominant cost; batching cuts it to a
+                # handful of round trips per variant.
                 invoice_seq = db.query(Sale).count()
-                for day_offset, qty in enumerate(series):
-                    if qty <= 0:
-                        continue
+                active_days = [(i, q) for i, q in enumerate(series) if q > 0]
+
+                sales = []
+                for day_offset, qty in active_days:
                     sale_date = start_date + datetime.timedelta(days=day_offset)
                     customer = rng.choice([cust_retail, cust_city, cust_metro, None], p=[0.5, 0.25, 0.15, 0.10])
                     invoice_seq += 1
-                    sale = Sale(
-                        invoice_number=f"DEMO-{sale_date:%Y%m%d}-{invoice_seq:05d}",
-                        customer_id=customer.id if customer else None,
-                        warehouse_id=warehouse.id,
-                        sale_date=sale_date,
-                        subtotal=qty * selling_price,
-                        discount_total=0,
-                        tax_total=0,
-                        total=qty * selling_price,
-                        is_demo=True,
-                        is_historical_import=True,
+                    sales.append(
+                        Sale(
+                            invoice_number=f"DEMO-{sale_date:%Y%m%d}-{invoice_seq:05d}",
+                            customer_id=customer.id if customer else None,
+                            warehouse_id=warehouse.id,
+                            sale_date=sale_date,
+                            subtotal=qty * selling_price,
+                            discount_total=0,
+                            tax_total=0,
+                            total=qty * selling_price,
+                            is_demo=True,
+                            is_historical_import=True,
+                        )
                     )
-                    db.add(sale)
-                    db.flush()
-                    db.add(
+                db.add_all(sales)
+                db.flush()  # assigns sale.id for every row above in one batch
+
+                sale_items = []
+                transactions = []
+                for (day_offset, qty), sale in zip(active_days, sales):
+                    sale_date = start_date + datetime.timedelta(days=day_offset)
+                    sale_items.append(
                         SaleItem(
                             sale_id=sale.id,
                             variant_id=variant.id,
@@ -228,22 +241,24 @@ def seed():
                             tax=0,
                         )
                     )
-                    inventory_service.record_transaction(
-                        db,
-                        TransactionRequest(
+                    transactions.append(
+                        InventoryTransaction(
                             variant_id=variant.id,
                             warehouse_id=warehouse.id,
                             batch_id=batch.id,
-                            transaction_type=TransactionType.SALE,
+                            transaction_type=TransactionType.SALE.value,
                             quantity=qty,
-                            transaction_date=datetime.datetime.combine(sale_date, datetime.time.min),
                             unit_price=selling_price,
+                            transaction_date=datetime.datetime.combine(sale_date, datetime.time.min),
                             reference_type="SALE",
                             reference_id=sale.id,
                             notes="Demo sale",
                             is_historical_import=True,
-                        ),
+                        )
                     )
+                db.add_all(sale_items)
+                db.add_all(transactions)
+                db.flush()
 
                 print(f"  seeded {sku}: span={span_days}d profile={profile} total_sold={total_sold} ending_stock~{target_ending}")
 
