@@ -30,16 +30,23 @@ class ImportError_(Exception):
 
 
 def create_import_job(
-    db: Session, *, filename: str, content: bytes, target_entity: str, user_id: int | None
+    db: Session, *, filename: str, content: bytes, target_entity: str | None, user_id: int | None
 ) -> DataImportJob:
-    if target_entity not in column_mapping.ENTITY_FIELDS:
-        raise ImportError_(f"Unknown import target: {target_entity}")
-
+    """`target_entity=None` (or "AUTO") auto-detects Sales vs. Purchases vs.
+    Opening Stock vs. Products from the file's own column headers — a
+    distributor's sales file and purchases file are never ambiguous with
+    each other (one has a cost column, the other a price column), so the
+    user shouldn't have to say which is which up front."""
     headers, rows = parsers.parse_upload(filename, content)
     if not rows:
         raise ImportError_("The uploaded file contains no data rows.")
 
-    suggested = column_mapping.suggest_mapping(headers, target_entity)
+    if target_entity in (None, "AUTO"):
+        target_entity, suggested = column_mapping.detect_target_entity(headers)
+    else:
+        if target_entity not in column_mapping.ENTITY_FIELDS:
+            raise ImportError_(f"Unknown import target: {target_entity}")
+        suggested = column_mapping.suggest_mapping(headers, target_entity)
 
     job = DataImportJob(
         filename=filename,

@@ -14,7 +14,7 @@ router = APIRouter(prefix="/api/imports", tags=["imports"])
 
 @router.post("/jobs")
 async def upload_import_job(
-    target_entity: str = Form(...),
+    target_entity: str | None = Form(None, description="Omit or pass 'AUTO' to auto-detect Sales/Purchases/etc. from the file's columns"),
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
     user: User = Depends(require_permission("import:run")),
@@ -27,6 +27,7 @@ async def upload_import_job(
     if len(content) > app_settings.MAX_IMPORT_FILE_SIZE_MB * 1024 * 1024:
         raise HTTPException(400, f"File exceeds the {app_settings.MAX_IMPORT_FILE_SIZE_MB}MB limit")
 
+    was_auto_detected = target_entity in (None, "AUTO")
     try:
         job = import_service.create_import_job(
             db, filename=file.filename, content=content, target_entity=target_entity, user_id=user.id
@@ -40,6 +41,8 @@ async def upload_import_job(
         "filename": job.filename,
         "total_rows": job.total_rows,
         "headers": job.raw_rows_cache["headers"],
+        "target_entity": job.target_entity,
+        "target_entity_auto_detected": was_auto_detected,
         "suggested_mapping": import_service.get_suggested_mapping(job),
         "status": job.status,
     }

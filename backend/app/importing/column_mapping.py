@@ -128,6 +128,48 @@ def suggest_mapping(headers: list[str], target_entity: str) -> dict[str, dict]:
     return result
 
 
+#: Order matters only as a tie-break when two entities score identically —
+#: SALES/PURCHASES first since they're what a distributor uploads day to day.
+_AUTO_DETECT_CANDIDATES = ["SALES", "PURCHASES", "OPENING_STOCK", "PRODUCTS"]
+
+
+def detect_target_entity(headers: list[str]) -> tuple[str, dict[str, dict]]:
+    """Picks the best-fitting import target for a file's headers, so the
+    user doesn't have to say up front whether it's a sales or purchases
+    sheet. Scores each candidate entity by how completely its *required*
+    fields are matched (a file missing a required field for an entity is
+    almost certainly not that entity — e.g. a sales file has no unit_cost
+    column, a purchases file has no unit_price column) and breaks ties with
+    how many optional fields also matched.
+
+    Returns (best_entity, its suggested mapping) so the caller never has to
+    call suggest_mapping a second time.
+    """
+    best_entity = _AUTO_DETECT_CANDIDATES[0]
+    best_mapping = suggest_mapping(headers, best_entity)
+    best_score = float("-inf")
+
+    for entity in _AUTO_DETECT_CANDIDATES:
+        mapping = suggest_mapping(headers, entity)
+        required_total = sum(1 for info in mapping.values() if info["required"])
+        required_matched = sum(1 for info in mapping.values() if info["required"] and info["header"])
+        optional_matched = sum(1 for info in mapping.values() if not info["required"] and info["header"])
+
+        if required_matched < required_total:
+            # Heavily penalize missing required fields so a merely-plausible
+            # entity never outranks one that's actually fully matched.
+            score = required_matched - (required_total - required_matched) * 100
+        else:
+            score = required_matched * 10 + optional_matched
+
+        if score > best_score:
+            best_score = score
+            best_entity = entity
+            best_mapping = mapping
+
+    return best_entity, best_mapping
+
+
 def validate_mapping_complete(mapping: dict[str, str | None], target_entity: str) -> list[str]:
     """mapping here is {canonical_field: header_or_None} as confirmed by the
     user. Returns a list of error strings for any missing required field."""

@@ -5,12 +5,12 @@ import PageHeader from "../components/PageHeader";
 import Badge from "../components/Badge";
 import { formatDateTime } from "../lib/format";
 
-const TARGETS = [
-  { value: "SALES", label: "Sales" },
-  { value: "PURCHASES", label: "Purchases" },
-  { value: "OPENING_STOCK", label: "Opening Stock" },
-  { value: "PRODUCTS", label: "Products / SKUs" },
-];
+const TARGET_LABELS: Record<string, string> = {
+  SALES: "Sales",
+  PURCHASES: "Purchases",
+  OPENING_STOCK: "Opening Stock",
+  PRODUCTS: "Products / SKUs",
+};
 
 interface MappingSuggestion {
   header: string | null;
@@ -23,6 +23,8 @@ interface UploadResult {
   filename: string;
   total_rows: number;
   headers: string[];
+  target_entity: string;
+  target_entity_auto_detected: boolean;
   suggested_mapping: Record<string, MappingSuggestion>;
   status: string;
 }
@@ -38,7 +40,6 @@ interface ValidationResult {
 }
 
 export default function ImportCenterPage() {
-  const [targetEntity, setTargetEntity] = useState("SALES");
   const [file, setFile] = useState<File | null>(null);
   const [upload, setUpload] = useState<UploadResult | null>(null);
   const [mapping, setMapping] = useState<Record<string, string | null>>({});
@@ -69,7 +70,7 @@ export default function ImportCenterPage() {
     setError(null);
     try {
       const form = new FormData();
-      form.append("target_entity", targetEntity);
+      form.append("target_entity", "AUTO");
       form.append("file", file);
       const res = await api.post<UploadResult>("/imports/jobs", form, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -87,6 +88,10 @@ export default function ImportCenterPage() {
     }
   };
 
+  // Validate, then — only if every row is clean — import immediately with
+  // no further click. A file with any error/duplicate always stops here so
+  // the user can see and decide about it; a clean file just goes straight
+  // through, matching "only stop and show me a screen if there's a problem."
   const doValidate = async () => {
     if (!upload) return;
     setBusy(true);
@@ -95,6 +100,11 @@ export default function ImportCenterPage() {
       await api.post(`/imports/jobs/${upload.job_id}/mapping`, mapping);
       const res = await api.post<ValidationResult>(`/imports/jobs/${upload.job_id}/validate`);
       setValidation(res.data);
+      if (res.data.invalid_rows === 0 && res.data.duplicate_rows === 0 && res.data.valid_rows > 0) {
+        const commitRes = await api.post(`/imports/jobs/${upload.job_id}/commit`);
+        setCommitted(commitRes.data);
+        loadJobs();
+      }
     } catch (e) {
       setError(apiErrorMessage(e));
     } finally {
@@ -119,24 +129,14 @@ export default function ImportCenterPage() {
 
   return (
     <div>
-      <PageHeader title="Import Center" description="Upload → map columns → validate → preview → confirm → import. Nothing is written to the database before you confirm." />
+      <PageHeader title="Import Center" description="Upload a sales or purchases sheet — the type and column mapping are detected automatically. A clean file imports immediately; anything with errors stops for you to review." />
 
       {error && <div className="mb-4 text-sm text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2">{error}</div>}
 
       {!upload && (
         <div className="bg-white border border-slate-200 rounded-lg p-4 mb-6">
-          <div className="text-sm font-semibold text-slate-800 mb-3">Step 1 — Upload File</div>
+          <div className="text-sm font-semibold text-slate-800 mb-3">Upload File</div>
           <div className="flex gap-3 items-end">
-            <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">Import Target</label>
-              <select value={targetEntity} onChange={(e) => setTargetEntity(e.target.value)} className="border border-slate-300 rounded px-2 py-1.5 text-sm">
-                {TARGETS.map((t) => (
-                  <option key={t.value} value={t.value}>
-                    {t.label}
-                  </option>
-                ))}
-              </select>
-            </div>
             <div>
               <label className="block text-xs font-medium text-slate-600 mb-1">File (.csv, .xlsx)</label>
               <input type="file" accept=".csv,.xlsx,.xls" onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="text-sm" />
@@ -155,8 +155,14 @@ export default function ImportCenterPage() {
 
       {upload && !validation && (
         <div className="bg-white border border-slate-200 rounded-lg p-4 mb-6">
-          <div className="text-sm font-semibold text-slate-800 mb-3">
-            Step 2 — Review Column Mapping ({upload.filename}, {upload.total_rows} rows)
+          <div className="text-sm font-semibold text-slate-800 mb-1">
+            Review Column Mapping ({upload.filename}, {upload.total_rows} rows)
+          </div>
+          <div className="text-xs text-slate-500 mb-3">
+            Detected as{" "}
+            <span className="font-medium text-slate-700">{TARGET_LABELS[upload.target_entity] ?? upload.target_entity}</span>
+            {upload.target_entity_auto_detected ? " automatically from the file's columns." : "."} Not right? Edit the
+            mapping below, or go back and re-upload.
           </div>
           <table className="w-full text-sm mb-3">
             <thead>
@@ -207,7 +213,7 @@ export default function ImportCenterPage() {
 
       {validation && !committed && (
         <div className="bg-white border border-slate-200 rounded-lg p-4 mb-6">
-          <div className="text-sm font-semibold text-slate-800 mb-3">Step 3 — Validation Report</div>
+          <div className="text-sm font-semibold text-slate-800 mb-3">Validation Report</div>
           <div className="grid grid-cols-4 gap-3 mb-4">
             <div className="bg-slate-50 rounded p-2 text-center">
               <div className="text-xs text-slate-500">Total Rows</div>
