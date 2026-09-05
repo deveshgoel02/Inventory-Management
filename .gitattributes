@@ -1,0 +1,11 @@
+# Force binary handling for file types Git's text-detection heuristic can
+# mis-classify (small/simple PDFs in particular can lack the NUL bytes Git
+# uses to guess "binary", which would otherwise let core.autocrlf mangle
+# line endings inside the compressed byte stream and corrupt the file).
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.woff binary
+*.woff2 binary
