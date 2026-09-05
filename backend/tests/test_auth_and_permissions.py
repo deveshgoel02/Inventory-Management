@@ -35,3 +35,47 @@ def test_viewer_role_cannot_create_products(client, auth_headers, db_session):
         json={"brand_id": 1, "name": "Should Not Be Created"},
     )
     assert resp.status_code == 403
+
+
+def test_change_password_requires_correct_current_password(client, auth_headers):
+    resp = client.post(
+        "/api/auth/change-password",
+        headers=auth_headers,
+        json={"current_password": "wrong", "new_password": "NewPassword123"},
+    )
+    assert resp.status_code == 400
+
+
+def test_change_password_rejects_same_password(client, auth_headers):
+    resp = client.post(
+        "/api/auth/change-password",
+        headers=auth_headers,
+        json={"current_password": "ChangeMe123!", "new_password": "ChangeMe123!"},
+    )
+    assert resp.status_code == 400
+
+
+def test_change_password_succeeds_and_new_password_works(client, auth_headers):
+    resp = client.post(
+        "/api/auth/change-password",
+        headers=auth_headers,
+        json={"current_password": "ChangeMe123!", "new_password": "BrandNewPassword456"},
+    )
+    assert resp.status_code == 200, resp.text
+
+    # Old password no longer works.
+    old_login = client.post("/api/auth/login", json={"email": "admin@shoexpress.co.in", "password": "ChangeMe123!"})
+    assert old_login.status_code == 401
+
+    # New password does.
+    new_login = client.post("/api/auth/login", json={"email": "admin@shoexpress.co.in", "password": "BrandNewPassword456"})
+    assert new_login.status_code == 200
+
+
+def test_change_password_rejects_too_short_new_password(client, auth_headers):
+    resp = client.post(
+        "/api/auth/change-password",
+        headers=auth_headers,
+        json={"current_password": "ChangeMe123!", "new_password": "short"},
+    )
+    assert resp.status_code == 422

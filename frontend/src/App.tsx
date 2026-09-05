@@ -20,6 +20,7 @@ import DataQualityPage from "./pages/DataQualityPage";
 import SettingsPage from "./pages/SettingsPage";
 import UsersPage from "./pages/UsersPage";
 import AuditLogsPage from "./pages/AuditLogsPage";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/users" element={<UsersPage />} />
             <Route path="/audit-logs" element={<AuditLogsPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
           </Route>
         </Routes>
       </AuthProvider>

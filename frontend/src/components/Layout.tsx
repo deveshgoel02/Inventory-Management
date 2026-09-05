@@ -45,6 +45,7 @@ const NAV_SECTIONS: { label: string; items: { to: string; label: string; permiss
 ];
 
 function findPageLabel(pathname: string): string {
+  if (pathname.startsWith("/profile")) return "Profile";
   for (const section of NAV_SECTIONS) {
     for (const item of section.items) {
       if (item.to === "/" ? pathname === "/" : pathname.startsWith(item.to)) {
@@ -123,14 +124,22 @@ export default function Layout() {
           })}
         </nav>
         <div className="px-5 py-4 border-t border-white/10">
-          <div className="text-sm font-medium text-white truncate">{user?.full_name}</div>
-          <div className="text-xs text-slate-400 truncate">{user?.role.name}</div>
-          <button
-            onClick={logout}
-            className="mt-2 text-xs text-slate-400 hover:text-white underline underline-offset-2"
-          >
-            Sign out
-          </button>
+          <NavLink to="/profile" onClick={() => setSidebarOpen(false)} className="block hover:opacity-80">
+            <div className="text-sm font-medium text-white truncate">{user?.full_name}</div>
+            <div className="text-xs text-slate-400 truncate">{user?.role.name}</div>
+          </NavLink>
+          <div className="mt-2 flex gap-3 text-xs">
+            <NavLink
+              to="/profile"
+              onClick={() => setSidebarOpen(false)}
+              className="text-slate-400 hover:text-white underline underline-offset-2"
+            >
+              Profile
+            </NavLink>
+            <button onClick={logout} className="text-slate-400 hover:text-white underline underline-offset-2">
+              Sign out
+            </button>
+          </div>
         </div>
       </aside>
 

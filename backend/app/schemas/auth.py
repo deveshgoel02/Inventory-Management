@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import BaseModel, EmailStr, ConfigDict, Field
 
 
 class LoginRequest(BaseModel):
@@ -40,3 +40,8 @@ class UserUpdate(BaseModel):
     role_id: int | None = None
     is_active: bool | None = None
     password: str | None = None
+
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str = Field(min_length=8)
