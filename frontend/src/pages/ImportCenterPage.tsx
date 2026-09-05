@@ -65,7 +65,10 @@ export default function ImportCenterPage() {
   };
 
   const doUpload = async () => {
-    if (!file) return;
+    if (!file) {
+      setError("Choose a file first — click \"Choose file\" above and pick a .csv or .xlsx, then Upload.");
+      return;
+    }
     setBusy(true);
     setError(null);
     try {
@@ -139,9 +142,17 @@ export default function ImportCenterPage() {
           <div className="flex flex-wrap gap-3 items-end">
             <div>
               <label className="block text-xs font-medium text-slate-600 mb-1">File (.csv, .xlsx)</label>
-              <input type="file" accept=".csv,.xlsx,.xls" onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="text-sm max-w-[70vw]" />
+              <input
+                type="file"
+                accept=".csv,.xlsx,.xls"
+                onChange={(e) => {
+                  setFile(e.target.files?.[0] ?? null);
+                  setError(null);
+                }}
+                className="text-sm max-w-[70vw]"
+              />
             </div>
-            <button onClick={doUpload} disabled={!file || busy} className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-sm px-4 py-1.5 rounded">
+            <button onClick={doUpload} disabled={busy} className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-sm px-4 py-1.5 rounded">
               {busy ? "Uploading…" : "Upload"}
             </button>
             {busy && (
