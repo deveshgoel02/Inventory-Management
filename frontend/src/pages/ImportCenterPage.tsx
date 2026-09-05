@@ -142,8 +142,13 @@ export default function ImportCenterPage() {
               <input type="file" accept=".csv,.xlsx,.xls" onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="text-sm" />
             </div>
             <button onClick={doUpload} disabled={!file || busy} className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-sm px-4 py-1.5 rounded">
-              Upload
+              {busy ? "Uploading…" : "Upload"}
             </button>
+            {busy && (
+              <span className="text-xs text-slate-400 self-end pb-2">
+                First request after idle can take up to a minute while the server wakes up.
+              </span>
+            )}
           </div>
         </div>
       )}
@@ -191,7 +196,7 @@ export default function ImportCenterPage() {
           </table>
           <div className="flex gap-2">
             <button onClick={doValidate} disabled={busy} className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-sm px-4 py-1.5 rounded">
-              Validate
+              {busy ? "Validating…" : "Validate"}
             </button>
             <button onClick={reset} className="text-sm border border-slate-300 rounded px-3 py-1.5 hover:bg-slate-50">
               Start Over
@@ -249,7 +254,7 @@ export default function ImportCenterPage() {
               disabled={busy || validation.valid_rows === 0}
               className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-sm px-4 py-1.5 rounded"
             >
-              Confirm &amp; Import {validation.valid_rows} Valid Row(s)
+              {busy ? "Importing…" : `Confirm & Import ${validation.valid_rows} Valid Row(s)`}
             </button>
             <button onClick={reset} className="text-sm border border-slate-300 rounded px-3 py-1.5 hover:bg-slate-50">
               Start Over
