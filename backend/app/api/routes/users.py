@@ -11,6 +11,30 @@ from app.services.audit_service import log_action
 router = APIRouter(prefix="/api", tags=["users"])
 
 
+def _would_remove_last_admin(db: Session, target: User, updates: dict) -> bool:
+    """True if this update would leave the system with zero active ADMIN
+    users - e.g. demoting or deactivating the only admin, including an
+    admin doing it to themselves. Checked regardless of who's making the
+    change, since the permission gate (user:manage) only proves the actor
+    currently has admin-level rights, not that removing the last one is
+    intentional."""
+    if target.role.name != "ADMIN" or not target.is_active:
+        return False
+
+    losing_admin_role = "role_id" in updates and updates["role_id"] != target.role_id
+    losing_active_status = updates.get("is_active") is False
+    if not losing_admin_role and not losing_active_status:
+        return False
+
+    other_active_admins = (
+        db.query(User)
+        .join(Role, Role.id == User.role_id)
+        .filter(Role.name == "ADMIN", User.is_active.is_(True), User.id != target.id)
+        .count()
+    )
+    return other_active_admins == 0
+
+
 @router.get("/users", response_model=list[UserOut])
 def list_users(db: Session = Depends(get_db), _: User = Depends(require_permission("user:manage"))):
     users = db.query(User).all()
@@ -60,6 +84,18 @@ def update_user(
         raise HTTPException(404, "User not found")
 
     updates = payload.model_dump(exclude_unset=True)
+
+    if "email" in updates and updates["email"] != target.email:
+        existing = db.query(User).filter(User.email == updates["email"], User.id != target.id).one_or_none()
+        if existing:
+            raise HTTPException(400, "That email is already in use by another account")
+
+    if "role_id" in updates and updates["role_id"] is not None and not db.get(Role, updates["role_id"]):
+        raise HTTPException(400, "Invalid role_id")
+
+    if _would_remove_last_admin(db, target, updates):
+        raise HTTPException(400, "This is the last active admin account - assign another admin before changing this.")
+
     before = {k: getattr(target, k) for k in updates if hasattr(target, k)}
 
     if "password" in updates:

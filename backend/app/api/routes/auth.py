@@ -5,7 +5,7 @@ from app.auth.deps import get_current_user
 from app.auth.security import create_access_token, create_refresh_token, hash_password, verify_password
 from app.core.database import get_db
 from app.models.auth import User
-from app.schemas.auth import ChangePasswordRequest, LoginRequest, TokenResponse, UserOut
+from app.schemas.auth import ChangePasswordRequest, LoginRequest, ProfileUpdate, TokenResponse, UserOut
 from app.services.audit_service import log_action
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
@@ -31,6 +31,35 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
 
 @router.get("/me", response_model=UserOut)
 def me(current_user: User = Depends(get_current_user)):
+    out = UserOut.model_validate(current_user)
+    out.permissions = sorted(p.code for p in current_user.role.permissions)
+    return out
+
+
+@router.patch("/me", response_model=UserOut)
+def update_my_profile(
+    payload: ProfileUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Self-service: any authenticated user can update their own display
+    name and login email. Role and active-status changes are deliberately
+    NOT here - those go through /api/users (user:manage only), which also
+    guards against removing the last active admin."""
+    updates = payload.model_dump(exclude_unset=True, exclude_none=True)
+    if "email" in updates and updates["email"] != current_user.email:
+        existing = db.query(User).filter(User.email == updates["email"], User.id != current_user.id).one_or_none()
+        if existing:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="That email is already in use by another account")
+
+    before = {k: getattr(current_user, k) for k in updates}
+    for field, value in updates.items():
+        setattr(current_user, field, value)
+    db.flush()
+    log_action(db, user_id=current_user.id, action="UPDATE_PROFILE", entity_type="user", entity_id=current_user.id, before=before, after=updates)
+    db.commit()
+    db.refresh(current_user)
+
     out = UserOut.model_validate(current_user)
     out.permissions = sorted(p.code for p in current_user.role.permissions)
     return out

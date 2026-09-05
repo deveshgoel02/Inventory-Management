@@ -79,3 +79,63 @@ def test_change_password_rejects_too_short_new_password(client, auth_headers):
         json={"current_password": "ChangeMe123!", "new_password": "short"},
     )
     assert resp.status_code == 422
+
+
+def test_update_my_profile_changes_name_and_email(client, auth_headers):
+    resp = client.patch(
+        "/api/auth/me",
+        headers=auth_headers,
+        json={"full_name": "Renamed Admin", "email": "renamed-admin@shoexpress.co.in"},
+    )
+    assert resp.status_code == 200, resp.text
+    body = resp.json()
+    assert body["full_name"] == "Renamed Admin"
+    assert body["email"] == "renamed-admin@shoexpress.co.in"
+
+    # New email logs in; old one no longer does.
+    assert client.post("/api/auth/login", json={"email": "renamed-admin@shoexpress.co.in", "password": "ChangeMe123!"}).status_code == 200
+    assert client.post("/api/auth/login", json={"email": "admin@shoexpress.co.in", "password": "ChangeMe123!"}).status_code == 401
+
+
+def test_update_my_profile_rejects_email_already_in_use(client, auth_headers, db_session):
+    from app.auth.security import hash_password
+    from app.models.auth import Role, User
+
+    viewer_role = db_session.query(Role).filter(Role.name == "VIEWER").one()
+    db_session.add(User(email="taken@shoexpress.co.in", full_name="Someone Else", hashed_password=hash_password("pw123456"), role_id=viewer_role.id))
+    db_session.commit()
+
+    resp = client.patch("/api/auth/me", headers=auth_headers, json={"email": "taken@shoexpress.co.in"})
+    assert resp.status_code == 400
+
+
+def test_cannot_demote_the_last_active_admin(client, auth_headers, db_session):
+    from app.models.auth import Role
+
+    admin_user = client.get("/api/auth/me", headers=auth_headers).json()
+    manager_role = db_session.query(Role).filter(Role.name == "MANAGER").one()
+
+    resp = client.patch(f"/api/users/{admin_user['id']}", headers=auth_headers, json={"role_id": manager_role.id})
+    assert resp.status_code == 400
+    assert "admin" in resp.json()["detail"].lower()
+
+
+def test_cannot_deactivate_the_last_active_admin(client, auth_headers):
+    admin_user = client.get("/api/auth/me", headers=auth_headers).json()
+    resp = client.patch(f"/api/users/{admin_user['id']}", headers=auth_headers, json={"is_active": False})
+    assert resp.status_code == 400
+
+
+def test_can_demote_admin_when_another_admin_remains(client, auth_headers, db_session):
+    from app.auth.security import hash_password
+    from app.models.auth import Role, User
+
+    admin_role = db_session.query(Role).filter(Role.name == "ADMIN").one()
+    manager_role = db_session.query(Role).filter(Role.name == "MANAGER").one()
+    second_admin = User(email="second-admin@shoexpress.co.in", full_name="Second Admin", hashed_password=hash_password("pw123456"), role_id=admin_role.id)
+    db_session.add(second_admin)
+    db_session.commit()
+
+    admin_user = client.get("/api/auth/me", headers=auth_headers).json()
+    resp = client.patch(f"/api/users/{admin_user['id']}", headers=auth_headers, json={"role_id": manager_role.id})
+    assert resp.status_code == 200, resp.text
