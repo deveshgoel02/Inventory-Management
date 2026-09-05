@@ -149,7 +149,7 @@ export default function ImportCenterPage() {
                   setFile(e.target.files?.[0] ?? null);
                   setError(null);
                 }}
-                className="text-sm max-w-[70vw]"
+                className="text-sm max-w-[70vw] text-slate-500 file:mr-3 file:cursor-pointer file:rounded file:border-0 file:bg-indigo-600 file:px-4 file:py-1.5 file:text-sm file:font-medium file:text-white hover:file:bg-indigo-700"
               />
             </div>
             <button onClick={doUpload} disabled={busy} className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-sm px-4 py-1.5 rounded">
