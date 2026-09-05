@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { api } from "../api/client";
+import { api, downloadFile } from "../api/client";
 import type { Brand, CurrentStockRow, Warehouse } from "../api/types";
 import PageHeader from "../components/PageHeader";
 import { formatCurrency, formatNumber } from "../lib/format";
@@ -68,12 +68,12 @@ export default function InventoryPage() {
         <button onClick={load} className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-3 py-1.5 rounded">
           Search
         </button>
-        <a
-          href={`/api/reports/inventory/export?format=csv`}
+        <button
+          onClick={() => downloadFile("/reports/inventory/export", "inventory.csv", { format: "csv" })}
           className="ml-auto text-sm border border-slate-300 rounded px-3 py-1.5 hover:bg-slate-50"
         >
           Export CSV
-        </a>
+        </button>
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-4">

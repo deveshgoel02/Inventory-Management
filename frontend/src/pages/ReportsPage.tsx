@@ -1,3 +1,4 @@
+import { downloadFile } from "../api/client";
 import PageHeader from "../components/PageHeader";
 
 const REPORTS = [
@@ -19,12 +20,18 @@ export default function ReportsPage() {
             <div className="text-sm font-semibold text-slate-800">{r.label}</div>
             <p className="text-xs text-slate-500 mt-1 mb-3">{r.description}</p>
             <div className="flex gap-2">
-              <a href={`/api/reports/${r.key}/export?format=csv`} className="text-xs border border-slate-300 rounded px-3 py-1.5 hover:bg-slate-50">
+              <button
+                onClick={() => downloadFile(`/reports/${r.key}/export`, `${r.key}.csv`, { format: "csv" })}
+                className="text-xs border border-slate-300 rounded px-3 py-1.5 hover:bg-slate-50"
+              >
                 Export CSV
-              </a>
-              <a href={`/api/reports/${r.key}/export?format=xlsx`} className="text-xs border border-slate-300 rounded px-3 py-1.5 hover:bg-slate-50">
+              </button>
+              <button
+                onClick={() => downloadFile(`/reports/${r.key}/export`, `${r.key}.xlsx`, { format: "xlsx" })}
+                className="text-xs border border-slate-300 rounded px-3 py-1.5 hover:bg-slate-50"
+              >
                 Export Excel
-              </a>
+              </button>
             </div>
           </div>
         ))}

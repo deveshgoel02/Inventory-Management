@@ -1,0 +1,23 @@
+# Render Blueprint for the Shoe Xpress backend.
+# Deploy: Render dashboard -> New -> Blueprint -> select this repo.
+# (Render free-tier web services spin down after ~15 min idle and take
+# 30-60s to wake on the next request — fine for an internal staff tool,
+# not for public/heavy traffic. Upgrade the plan below if that changes.)
+#
+# DATABASE_URL, SECRET_KEY, and CORS_ORIGINS are NOT set here — add them
+# as environment variables in the Render dashboard after the first deploy
+# (see README.md "Deploying to production" for exact values). Keeping
+# secrets out of this file means it's safe to commit.
+
+services:
+  - type: web
+    name: shoexpress-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7

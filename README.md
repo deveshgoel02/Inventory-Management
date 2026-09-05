@@ -157,6 +157,94 @@ See business-rules.md §10 for the exact validation rules.
   runs inside the request's database transaction — a failure partway
   through a multi-item sale or receipt rolls back entirely.
 
+## Deploying to production
+
+Target setup for Shoe Xpress (internal staff tool, not public-facing —
+this is the right-sized deployment for that; see "heavier load" note
+below): **frontend on Vercel, backend on Render, database on Neon.** All
+three have a free tier that's sufficient for a handful of concurrent
+internal users. Total cost: $0/month to start.
+
+### 1. Database — Neon (or Supabase) Postgres
+
+1. Create a free project at [neon.tech](https://neon.tech) (or
+   [supabase.com](https://supabase.com)).
+2. Copy the connection string it gives you. It looks like
+   `postgresql://user:password@ep-xxxx.neon.tech/dbname?sslmode=require`.
+3. Rewrite it for SQLAlchemy's psycopg2 driver (just insert `+psycopg2`
+   after `postgresql`):
+   `postgresql+psycopg2://user:password@ep-xxxx.neon.tech/dbname?sslmode=require`
+   — this is the value you'll use as `DATABASE_URL` below.
+
+### 2. Backend — Render
+
+1. Push this repo to GitHub (already done if you're reading this from
+   the repo).
+2. In the Render dashboard: **New → Blueprint**, select this repo. It
+   will detect `render.yaml` at the repo root and propose a
+   `shoexpress-api` web service (backend runs from the `backend/`
+   subdirectory, free plan).
+3. The first deploy will fail — it's missing required env vars. In the
+   service's **Environment** tab, add:
+   - `DATABASE_URL` — the psycopg2 connection string from step 1.
+   - `SECRET_KEY` — a random 32+ character string (Render's env var editor
+     has a "Generate" button, or run `openssl rand -hex 32` locally).
+   - `CORS_ORIGINS` — `["https://placeholder.vercel.app"]` for now; you'll
+     update this with the real Vercel URL in step 4.
+   - `ENVIRONMENT` — `production`.
+4. Save — Render redeploys automatically. Once live, note the service URL
+   (e.g. `https://shoexpress-api.onrender.com`); `/api/health` should
+   return `{"status":"ok",...}`.
+5. **Free-tier caveat**: the service sleeps after ~15 min idle and takes
+   30-60s to wake on the next request. Fine for a staff tool people check
+   a few times a day; upgrade to a paid instance if that latency becomes
+   annoying.
+
+### 3. Frontend — Vercel
+
+1. In the Vercel dashboard: **Add New → Project**, import this repo.
+2. Set **Root Directory** to `frontend` (important — the repo root is not
+   the frontend project).
+3. Framework Preset: Vite (auto-detected). Build command / output
+   directory: leave the defaults (`npm run build` / `dist`).
+4. Add an environment variable: `VITE_API_BASE_URL` =
+   `https://shoexpress-api.onrender.com/api` (your actual Render URL from
+   step 2, with `/api` appended).
+5. Deploy. Note the resulting Vercel URL (e.g.
+   `https://shoexpress.vercel.app`).
+
+### 4. Close the loop — CORS
+
+Go back to Render → your service → Environment → update `CORS_ORIGINS` to
+the real Vercel URL: `["https://shoexpress.vercel.app"]`. Save (redeploys
+automatically). Without this step, the browser will block every API call
+from the deployed frontend with a CORS error.
+
+### 5. First login, then lock it down
+
+Visit the Vercel URL and log in with `admin@shoexpress.co.in` /
+`ChangeMe123!` (or whatever `INITIAL_ADMIN_EMAIL`/`INITIAL_ADMIN_PASSWORD`
+you set as Render env vars before the first deploy — those only take
+effect on the very first run, when the users table is empty). **Change
+this password immediately** from the Users page, or via Render env vars
+plus a fresh database before anyone else gets access.
+
+The production database starts empty (migrations run automatically via
+`render.yaml`'s start command, but no demo data is seeded). Either run
+`python scripts/seed_demo_data.py` locally with `DATABASE_URL` temporarily
+pointed at the production connection string to get demo data, or skip
+straight to entering real brands/products/opening stock through the UI or
+Import Center.
+
+### If this ever needs to handle heavier load
+
+The setup above (free tiers, single backend instance, SQLite→Postgres
+swap already done) is sized for internal staff use. If this becomes
+customer-facing or needs to serve many concurrent warehouses reliably,
+revisit: a paid always-on Render/Railway plan, connection pooling
+(PgBouncer) in front of Postgres, and possibly multiple backend instances
+behind a load balancer — a meaningfully bigger setup than described here.
+
 ## Known limitations / not yet built
 
 - **PDF export** is not implemented (CSV and Excel are). Recharts-based

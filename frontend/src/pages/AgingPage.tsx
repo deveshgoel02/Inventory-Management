@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
-import { api } from "../api/client";
+import { api, downloadFile } from "../api/client";
 import type { AgingBucketRow, AgingDetailRow } from "../api/types";
 import PageHeader from "../components/PageHeader";
 import { formatCurrency, formatDate, formatNumber } from "../lib/format";
@@ -23,9 +23,12 @@ export default function AgingPage() {
         title="Stock Aging"
         description="Age is computed per receiving batch — a SKU with multiple lots can straddle several buckets at once."
         actions={
-          <a href="/api/reports/aging/export?format=csv" className="text-sm border border-slate-300 rounded px-3 py-1.5 hover:bg-slate-50">
+          <button
+            onClick={() => downloadFile("/reports/aging/export", "aging.csv", { format: "csv" })}
+            className="text-sm border border-slate-300 rounded px-3 py-1.5 hover:bg-slate-50"
+          >
             Export CSV
-          </a>
+          </button>
         }
       />
 
