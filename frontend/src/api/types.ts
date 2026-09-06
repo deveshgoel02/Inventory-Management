@@ -133,6 +133,7 @@ export interface Sale {
   id: number;
   invoice_number: string;
   customer_id: number | null;
+  customer_name: string | null;
   warehouse_id: number;
   sale_date: string;
   subtotal: number;

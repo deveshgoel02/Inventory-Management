@@ -14,6 +14,7 @@ class SaleItemCreate(BaseModel):
 class SaleCreate(BaseModel):
     warehouse_id: int
     customer_id: int | None = None
+    party_name: str | None = None  # alternative to customer_id: look up or create a Customer by this name
     sale_date: datetime.date
     notes: str | None = None
     items: list[SaleItemCreate]
@@ -35,6 +36,7 @@ class SaleOut(BaseModel):
     id: int
     invoice_number: str
     customer_id: int | None
+    customer_name: str | None = None
     warehouse_id: int
     sale_date: datetime.date
     subtotal: float

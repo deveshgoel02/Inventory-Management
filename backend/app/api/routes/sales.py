@@ -45,7 +45,7 @@ def list_sales(
     db: Session = Depends(get_db),
     _: User = Depends(require_permission("sales:view")),
 ):
-    query = db.query(Sale).options(joinedload(Sale.items)).filter(Sale.is_active.is_(True))
+    query = db.query(Sale).options(joinedload(Sale.items), joinedload(Sale.customer)).filter(Sale.is_active.is_(True))
     if date_from:
         query = query.filter(Sale.sale_date >= date_from)
     if date_to:
@@ -60,6 +60,25 @@ def list_sales(
 def _next_invoice_number(db: Session) -> str:
     count = db.query(Sale).count()
     return f"INV-{datetime.date.today():%Y%m%d}-{count + 1:05d}"
+
+
+def _resolve_customer_id(db: Session, customer_id: int | None, party_name: str | None) -> int | None:
+    """party_name is a convenience alternative to picking a customer_id: look
+    up an existing customer by that name (case-insensitive) or create one on
+    the spot, so recording a sale never requires managing customer records
+    as a separate step first."""
+    if customer_id is not None:
+        return customer_id
+    name = (party_name or "").strip()
+    if not name:
+        return None
+    existing = db.query(Customer).filter(Customer.name.ilike(name)).one_or_none()
+    if existing:
+        return existing.id
+    customer = Customer(name=name)
+    db.add(customer)
+    db.flush()
+    return customer.id
 
 
 @router.post("/sales", response_model=SaleOut, status_code=201)
@@ -77,10 +96,11 @@ def create_sale(payload: SaleCreate, db: Session = Depends(get_db), user: User =
         discount_total += item.discount
         tax_total += item.tax
     total = subtotal - discount_total + tax_total
+    customer_id = _resolve_customer_id(db, payload.customer_id, payload.party_name)
 
     sale = Sale(
         invoice_number=_next_invoice_number(db),
-        customer_id=payload.customer_id,
+        customer_id=customer_id,
         warehouse_id=payload.warehouse_id,
         sale_date=payload.sale_date,
         subtotal=subtotal,

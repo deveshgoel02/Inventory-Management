@@ -51,6 +51,7 @@ export default function SalesPage() {
             <tr className="text-left text-xs text-slate-500 border-b border-slate-100 bg-slate-50">
               <th className="py-2 px-3">Invoice</th>
               <th className="py-2 px-3">Date</th>
+              <th className="py-2 px-3">Party Name</th>
               <th className="py-2 px-3 text-right">Items</th>
               <th className="py-2 px-3 text-right">Total</th>
             </tr>
@@ -60,6 +61,7 @@ export default function SalesPage() {
               <tr key={s.id} className="border-b border-slate-50">
                 <td className="py-2 px-3 font-medium">{s.invoice_number}</td>
                 <td className="py-2 px-3">{formatDate(s.sale_date)}</td>
+                <td className="py-2 px-3 text-slate-600">{s.customer_name ?? "—"}</td>
                 <td className="py-2 px-3 text-right">{s.items?.length ?? 0}</td>
                 <td className="py-2 px-3 text-right">{formatCurrency(s.total)}</td>
               </tr>
@@ -82,6 +84,7 @@ function NewSaleForm({
 }) {
   const [sku, setSku] = useState("");
   const [variant, setVariant] = useState<ProductVariant | null>(null);
+  const [partyName, setPartyName] = useState("");
   const [warehouseId, setWarehouseId] = useState<number | "">("");
   const [quantity, setQuantity] = useState(1);
   const [unitPrice, setUnitPrice] = useState(0);
@@ -108,6 +111,7 @@ function NewSaleForm({
     try {
       await api.post("/sales", {
         warehouse_id: warehouseId,
+        party_name: partyName || undefined,
         sale_date: saleDate,
         items: [{ variant_id: variant.id, quantity, unit_price: unitPrice }],
       });
@@ -121,7 +125,7 @@ function NewSaleForm({
 
   return (
     <div className="bg-white border border-slate-200 rounded-lg p-4 mb-4">
-      <div className="grid grid-cols-2 md:grid-cols-6 gap-3 items-end">
+      <div className="grid grid-cols-2 md:grid-cols-7 gap-3 items-end">
         <div className="col-span-2">
           <label className="block text-xs font-medium text-slate-600 mb-1">SKU</label>
           <div className="flex gap-1">
@@ -131,6 +135,15 @@ function NewSaleForm({
             </button>
           </div>
           {variant && <div className="text-[11px] text-emerald-600 mt-1">{variant.sku} found</div>}
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-slate-600 mb-1">Party Name</label>
+          <input
+            value={partyName}
+            onChange={(e) => setPartyName(e.target.value)}
+            placeholder="Walk-in / optional"
+            className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full"
+          />
         </div>
         <div>
           <label className="block text-xs font-medium text-slate-600 mb-1">Warehouse</label>

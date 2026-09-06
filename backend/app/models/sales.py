@@ -44,6 +44,15 @@ class Sale(Base, TimestampMixin, DemoDataMixin, SoftDeleteMixin):
     is_historical_import: Mapped[bool] = mapped_column(default=False)
 
     items: Mapped[list["SaleItem"]] = relationship(back_populates="sale")
+    customer: Mapped["Customer | None"] = relationship("Customer")
+
+    @property
+    def customer_name(self) -> str | None:
+        """The 'Party Name' shown in the UI - Indian trade terminology for
+        the customer on a sale. Kept as a computed property (rather than a
+        stored column) so it's always exactly the linked Customer's current
+        name, never a stale copy."""
+        return self.customer.name if self.customer else None
 
 
 class SaleItem(Base, TimestampMixin):
