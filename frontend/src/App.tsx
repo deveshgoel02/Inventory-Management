@@ -8,6 +8,7 @@ import DashboardPage from "./pages/DashboardPage";
 import InventoryPage from "./pages/InventoryPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import SalesPage from "./pages/SalesPage";
+import AllotmentsPage from "./pages/AllotmentsPage";
 import PurchasingPage from "./pages/PurchasingPage";
 import AgingPage from "./pages/AgingPage";
 import DeadlinesPage from "./pages/DeadlinesPage";
@@ -39,6 +40,7 @@ function App() {
             <Route path="/inventory" element={<InventoryPage />} />
             <Route path="/inventory/:variantId" element={<ProductDetailPage />} />
             <Route path="/sales" element={<SalesPage />} />
+            <Route path="/allotments" element={<AllotmentsPage />} />
             <Route path="/purchasing" element={<PurchasingPage />} />
             <Route path="/aging" element={<AgingPage />} />
             <Route path="/deadlines" element={<DeadlinesPage />} />

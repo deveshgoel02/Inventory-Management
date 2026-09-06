@@ -34,6 +34,8 @@ const COLOR_MAP: Record<string, string> = {
   IMPORTED: "bg-emerald-100 text-emerald-800",
   FAILED: "bg-red-100 text-red-800",
   PENDING: "bg-amber-100 text-amber-800",
+  IN_PROGRESS: "bg-sky-100 text-sky-800",
+  FULFILLED: "bg-emerald-100 text-emerald-800",
   ACCEPTED: "bg-emerald-100 text-emerald-800",
   DISMISSED: "bg-slate-100 text-slate-600",
 };

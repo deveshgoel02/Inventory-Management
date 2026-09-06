@@ -153,6 +153,46 @@ export interface SaleItem {
   tax: number;
 }
 
+export interface SalesmanBrief {
+  id: number;
+  full_name: string;
+  email: string;
+  role_name: string;
+}
+
+export interface AllotmentExecutionSale {
+  sale_id: number;
+  invoice_number: string;
+  sale_date: string;
+  quantity: number;
+  unit_price: number;
+}
+
+export interface SalesAllotment {
+  id: number;
+  salesman_id: number;
+  salesman_name: string;
+  variant_id: number;
+  sku: string;
+  product_name: string;
+  warehouse_id: number | null;
+  warehouse_name: string | null;
+  allotted_quantity: number;
+  allotted_date: string;
+  due_date: string | null;
+  notes: string | null;
+  is_active: boolean;
+  executed_quantity: number;
+  remaining_quantity: number;
+  completion_pct: number;
+  fulfillment_status: "PENDING" | "IN_PROGRESS" | "FULFILLED" | "CANCELLED";
+  created_at: string;
+}
+
+export interface SalesAllotmentDetail extends SalesAllotment {
+  contributing_sales: AllotmentExecutionSale[];
+}
+
 export interface Customer {
   id: number;
   name: string;

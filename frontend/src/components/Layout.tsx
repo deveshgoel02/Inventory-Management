@@ -13,6 +13,7 @@ const NAV_SECTIONS: { label: string; items: { to: string; label: string; permiss
     items: [
       { to: "/inventory", label: "Inventory", permission: "inventory:view" },
       { to: "/sales", label: "Sales", permission: "sales:view" },
+      { to: "/allotments", label: "Salesman Allotments", permission: "allotment:view" },
       { to: "/purchasing", label: "Purchasing", permission: "purchase:view" },
       { to: "/aging", label: "Stock Aging", permission: "inventory:view" },
       { to: "/deadlines", label: "Deadlines & Alerts", permission: "inventory:view" },

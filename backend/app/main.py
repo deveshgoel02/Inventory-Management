@@ -6,7 +6,7 @@ from fastapi.exception_handlers import http_exception_handler
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.api.routes import analytics, audit, auth, catalog, deadlines, imports, inventory, purchasing, reports, sales, settings, users, warehouses
+from app.api.routes import allotments, analytics, audit, auth, catalog, deadlines, imports, inventory, purchasing, reports, sales, settings, users, warehouses
 from app.bootstrap import run_bootstrap
 from app.core.config import settings as app_settings
 from app.core.database import SessionLocal
@@ -56,6 +56,7 @@ app.include_router(catalog.router)
 app.include_router(warehouses.router)
 app.include_router(inventory.router)
 app.include_router(sales.router)
+app.include_router(allotments.router)
 app.include_router(purchasing.router)
 app.include_router(deadlines.router)
 app.include_router(analytics.router)

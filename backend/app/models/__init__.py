@@ -2,6 +2,7 @@
 autogenerate and for Base.metadata.create_all() in tests."""
 
 from app.models import (  # noqa: F401
+    allotments,
     analytics,
     audit,
     auth,
