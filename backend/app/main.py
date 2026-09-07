@@ -1,15 +1,19 @@
 import logging
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exception_handlers import http_exception_handler
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.api.routes import allotments, analytics, audit, auth, catalog, deadlines, imports, inventory, purchasing, reports, sales, settings, users, warehouses
 from app.bootstrap import run_bootstrap
 from app.core.config import settings as app_settings
 from app.core.database import SessionLocal
+
+STATIC_DIR = Path(__file__).resolve().parents[1] / "static"
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s [%(name)s] %(message)s")
 logger = logging.getLogger("shoexpress")
@@ -71,6 +75,10 @@ app.include_router(reports.router)
 app.include_router(settings.router)
 app.include_router(users.router)
 app.include_router(audit.router)
+
+# Public static downloads (e.g. the Android APK) - no auth required, since
+# these are meant to be shared as plain links, not accessed through the app.
+app.mount("/downloads", StaticFiles(directory=STATIC_DIR / "downloads"), name="downloads")
 
 
 @app.get("/api/health")
