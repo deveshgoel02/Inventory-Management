@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Shoe Xpress</string>
+    <string name="title_activity_main">Shoe Xpress</string>
+    <string name="package_name">com.shoexpress.inventory</string>
+    <string name="custom_url_scheme">com.shoexpress.inventory</string>
+</resources>

@@ -27,9 +27,15 @@ async def lifespan(_app: FastAPI):
 
 app = FastAPI(title=app_settings.APP_NAME, version="0.1.0", lifespan=lifespan)
 
+# The Android app (built with Capacitor) always serves its bundled web assets
+# from these two fixed origins, regardless of which deployment it's built
+# against - so they're safe to always allow, not just something toggled via
+# the CORS_ORIGINS env var used for the actual web frontend deployments.
+NATIVE_APP_ORIGINS = ["https://localhost", "capacitor://localhost"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=app_settings.CORS_ORIGINS,
+    allow_origins=[*app_settings.CORS_ORIGINS, *NATIVE_APP_ORIGINS],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
