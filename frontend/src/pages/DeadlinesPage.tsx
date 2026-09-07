@@ -54,15 +54,15 @@ export default function DeadlinesPage() {
           onError={setError}
         />
       )}
-      {error && <div className="mb-4 text-sm text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2">{error}</div>}
+      {error && <div className="mb-4 text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800/50 rounded px-3 py-2">{error}</div>}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
-          <div className="text-sm font-semibold text-slate-800 mb-2">Stock Deadlines</div>
-          <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
+          <div className="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-2">Stock Deadlines</div>
+          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-xs text-slate-500 border-b border-slate-100 bg-slate-50">
+                <tr className="text-left text-xs text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/60">
                   <th className="py-2 px-3">Scope</th>
                   <th className="py-2 px-3">Deadline</th>
                   <th className="py-2 px-3">Status</th>
@@ -70,15 +70,15 @@ export default function DeadlinesPage() {
               </thead>
               <tbody>
                 {deadlines.map((d) => (
-                  <tr key={d.id} className="border-b border-slate-50">
+                  <tr key={d.id} className="border-b border-slate-50 dark:border-slate-800">
                     <td className="py-2 px-3">
                       {d.scope_type}: {d.scope_label ?? d.scope_id}
-                      {d.notes && <div className="text-[11px] text-slate-400">{d.notes}</div>}
+                      {d.notes && <div className="text-[11px] text-slate-400 dark:text-slate-500">{d.notes}</div>}
                     </td>
                     <td className="py-2 px-3">
                       {formatDate(d.deadline_date)}
                       {d.days_remaining !== null && (
-                        <div className="text-[11px] text-slate-400">{d.days_remaining} day(s) remaining</div>
+                        <div className="text-[11px] text-slate-400 dark:text-slate-500">{d.days_remaining} day(s) remaining</div>
                       )}
                     </td>
                     <td className="py-2 px-3">
@@ -92,34 +92,34 @@ export default function DeadlinesPage() {
         </div>
 
         <div>
-          <div className="text-sm font-semibold text-slate-800 mb-2">Alerts</div>
+          <div className="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-2">Alerts</div>
           <div className="space-y-2">
             {alerts.map((a) => (
-              <div key={a.id} className="bg-white border border-slate-200 rounded-lg p-3">
+              <div key={a.id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3">
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-2">
                     <Badge label={a.severity} />
                     <Badge label={a.status} />
                   </div>
-                  <span className="text-[11px] text-slate-400">{formatDateTime(a.created_at)}</span>
+                  <span className="text-[11px] text-slate-400 dark:text-slate-500">{formatDateTime(a.created_at)}</span>
                 </div>
-                <div className="text-sm font-medium text-slate-800">{a.title}</div>
-                <div className="text-xs text-slate-500 mb-2">{a.message}</div>
+                <div className="text-sm font-medium text-slate-800 dark:text-slate-100">{a.title}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mb-2">{a.message}</div>
                 {a.status !== "RESOLVED" && hasPermission("alert:manage") && (
                   <div className="flex gap-2">
                     {a.status === "OPEN" && (
-                      <button onClick={() => acknowledge(a.id)} className="text-xs border border-slate-300 rounded px-2 py-1 hover:bg-slate-50">
+                      <button onClick={() => acknowledge(a.id)} className="text-xs border border-slate-300 dark:border-slate-600 rounded px-2 py-1 hover:bg-slate-50 dark:hover:bg-slate-800/60">
                         Acknowledge
                       </button>
                     )}
-                    <button onClick={() => resolve(a.id)} className="text-xs border border-slate-300 rounded px-2 py-1 hover:bg-slate-50">
+                    <button onClick={() => resolve(a.id)} className="text-xs border border-slate-300 dark:border-slate-600 rounded px-2 py-1 hover:bg-slate-50 dark:hover:bg-slate-800/60">
                       Resolve
                     </button>
                   </div>
                 )}
               </div>
             ))}
-            {alerts.length === 0 && <div className="text-xs text-slate-400">No alerts.</div>}
+            {alerts.length === 0 && <div className="text-xs text-slate-400 dark:text-slate-500">No alerts.</div>}
           </div>
         </div>
       </div>
@@ -169,11 +169,11 @@ function NewDeadlineForm({ onDone, onError }: { onDone: () => void; onError: (ms
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-lg p-4 mb-4">
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 mb-4">
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 items-end">
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Scope Type</label>
-          <select value={scopeType} onChange={(e) => setScopeType(e.target.value)} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full">
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Scope Type</label>
+          <select value={scopeType} onChange={(e) => setScopeType(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full">
             <option value="SKU">SKU</option>
             <option value="PRODUCT">Product</option>
             <option value="BRAND">Brand</option>
@@ -182,31 +182,31 @@ function NewDeadlineForm({ onDone, onError }: { onDone: () => void; onError: (ms
         </div>
         {scopeType === "SKU" ? (
           <div>
-            <label className="block text-xs font-medium text-slate-600 mb-1">SKU</label>
+            <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">SKU</label>
             <div className="flex gap-1">
-              <input value={skuLookup} onChange={(e) => setSkuLookup(e.target.value)} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full" />
-              <button onClick={lookupSku} className="text-xs border border-slate-300 rounded px-2 hover:bg-slate-50">
+              <input value={skuLookup} onChange={(e) => setSkuLookup(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full" />
+              <button onClick={lookupSku} className="text-xs border border-slate-300 dark:border-slate-600 rounded px-2 hover:bg-slate-50 dark:hover:bg-slate-800/60">
                 Find
               </button>
             </div>
           </div>
         ) : (
           <div>
-            <label className="block text-xs font-medium text-slate-600 mb-1">Scope ID</label>
-            <input value={scopeId} onChange={(e) => setScopeId(e.target.value)} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full" />
+            <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Scope ID</label>
+            <input value={scopeId} onChange={(e) => setScopeId(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full" />
           </div>
         )}
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Deadline Date</label>
-          <input type="date" value={deadlineDate} onChange={(e) => setDeadlineDate(e.target.value)} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full" />
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Deadline Date</label>
+          <input type="date" value={deadlineDate} onChange={(e) => setDeadlineDate(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full" />
         </div>
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Warning Days</label>
-          <input type="number" value={warningDays} onChange={(e) => setWarningDays(Number(e.target.value))} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full" />
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Warning Days</label>
+          <input type="number" value={warningDays} onChange={(e) => setWarningDays(Number(e.target.value))} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full" />
         </div>
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Notes</label>
-          <input value={notes} onChange={(e) => setNotes(e.target.value)} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full" />
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Notes</label>
+          <input value={notes} onChange={(e) => setNotes(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full" />
         </div>
       </div>
       <button onClick={submit} disabled={submitting} className="mt-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-sm px-4 py-1.5 rounded">

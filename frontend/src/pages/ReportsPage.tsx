@@ -16,19 +16,19 @@ export default function ReportsPage() {
       <PageHeader title="Reports" description="Every export reads from the same authoritative backend data shown on screen." />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {REPORTS.map((r) => (
-          <div key={r.key} className="bg-white border border-slate-200 rounded-lg p-4">
-            <div className="text-sm font-semibold text-slate-800">{r.label}</div>
-            <p className="text-xs text-slate-500 mt-1 mb-3">{r.description}</p>
+          <div key={r.key} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+            <div className="text-sm font-semibold text-slate-800 dark:text-slate-100">{r.label}</div>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3">{r.description}</p>
             <div className="flex gap-2">
               <button
                 onClick={() => downloadFile(`/reports/${r.key}/export`, `${r.key}.csv`, { format: "csv" })}
-                className="text-xs border border-slate-300 rounded px-3 py-1.5 hover:bg-slate-50"
+                className="text-xs border border-slate-300 dark:border-slate-600 rounded px-3 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-800/60"
               >
                 Export CSV
               </button>
               <button
                 onClick={() => downloadFile(`/reports/${r.key}/export`, `${r.key}.xlsx`, { format: "xlsx" })}
-                className="text-xs border border-slate-300 rounded px-3 py-1.5 hover:bg-slate-50"
+                className="text-xs border border-slate-300 dark:border-slate-600 rounded px-3 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-800/60"
               >
                 Export Excel
               </button>

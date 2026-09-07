@@ -61,11 +61,11 @@ export default function SettingsPage() {
   return (
     <div>
       <PageHeader title="Settings" description="Business rules, brands, and warehouses — no code changes required to adjust any of this." />
-      {error && <div className="mb-4 text-sm text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2">{error}</div>}
+      {error && <div className="mb-4 text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800/50 rounded px-3 py-2">{error}</div>}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-        <div className="bg-white border border-slate-200 rounded-lg p-4">
-          <div className="text-sm font-semibold text-slate-800 mb-3">Business Rules</div>
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+          <div className="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-3">Business Rules</div>
           <div className="space-y-3">
             {Object.entries(settings).map(([key, value]) => (
               <SettingRow key={key} settingKey={key} value={value} canEdit={canManage} onSave={updateSetting} />
@@ -74,20 +74,20 @@ export default function SettingsPage() {
         </div>
 
         <div className="space-y-4">
-          <div className="bg-white border border-slate-200 rounded-lg p-4">
-            <div className="text-sm font-semibold text-slate-800 mb-3">Brands</div>
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+            <div className="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-3">Brands</div>
             <ul className="text-sm mb-3 space-y-1">
               {brands.map((b) => (
-                <li key={b.id} className="flex justify-between border-b border-slate-50 py-1">
+                <li key={b.id} className="flex justify-between border-b border-slate-50 dark:border-slate-800 py-1">
                   <span>{b.name}</span>
-                  <span className="text-slate-400">{b.code}</span>
+                  <span className="text-slate-400 dark:text-slate-500">{b.code}</span>
                 </li>
               ))}
             </ul>
             {canManage && (
               <div className="flex gap-2">
-                <input placeholder="Name" value={newBrandName} onChange={(e) => setNewBrandName(e.target.value)} className="border border-slate-300 rounded px-2 py-1 text-sm w-full" />
-                <input placeholder="Code" value={newBrandCode} onChange={(e) => setNewBrandCode(e.target.value)} className="border border-slate-300 rounded px-2 py-1 text-sm w-24" />
+                <input placeholder="Name" value={newBrandName} onChange={(e) => setNewBrandName(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1 text-sm w-full" />
+                <input placeholder="Code" value={newBrandCode} onChange={(e) => setNewBrandCode(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1 text-sm w-24" />
                 <button onClick={addBrand} className="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded">
                   Add
                 </button>
@@ -95,20 +95,20 @@ export default function SettingsPage() {
             )}
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-lg p-4">
-            <div className="text-sm font-semibold text-slate-800 mb-3">Warehouses</div>
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+            <div className="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-3">Warehouses</div>
             <ul className="text-sm mb-3 space-y-1">
               {warehouses.map((w) => (
-                <li key={w.id} className="flex justify-between border-b border-slate-50 py-1">
+                <li key={w.id} className="flex justify-between border-b border-slate-50 dark:border-slate-800 py-1">
                   <span>{w.name}</span>
-                  <span className="text-slate-400">{w.code}</span>
+                  <span className="text-slate-400 dark:text-slate-500">{w.code}</span>
                 </li>
               ))}
             </ul>
             {canManage && (
               <div className="flex gap-2">
-                <input placeholder="Name" value={newWarehouseName} onChange={(e) => setNewWarehouseName(e.target.value)} className="border border-slate-300 rounded px-2 py-1 text-sm w-full" />
-                <input placeholder="Code" value={newWarehouseCode} onChange={(e) => setNewWarehouseCode(e.target.value)} className="border border-slate-300 rounded px-2 py-1 text-sm w-24" />
+                <input placeholder="Name" value={newWarehouseName} onChange={(e) => setNewWarehouseName(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1 text-sm w-full" />
+                <input placeholder="Code" value={newWarehouseCode} onChange={(e) => setNewWarehouseCode(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1 text-sm w-24" />
                 <button onClick={addWarehouse} className="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded">
                   Add
                 </button>
@@ -136,12 +136,12 @@ function SettingRow({
 
   return (
     <div className="flex items-center justify-between gap-2">
-      <div className="text-xs font-medium text-slate-600 w-1/2">{settingKey.replace(/_/g, " ")}</div>
+      <div className="text-xs font-medium text-slate-600 dark:text-slate-300 w-1/2">{settingKey.replace(/_/g, " ")}</div>
       <input
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
         disabled={!canEdit}
-        className="border border-slate-300 rounded px-2 py-1 text-xs w-1/2 disabled:bg-slate-50"
+        className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1 text-xs w-1/2 disabled:bg-slate-50 dark:bg-slate-800/60"
       />
       {canEdit && (
         <button

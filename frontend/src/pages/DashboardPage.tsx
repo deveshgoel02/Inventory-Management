@@ -7,8 +7,16 @@ import PageHeader from "../components/PageHeader";
 import StatCard from "../components/StatCard";
 import Badge from "../components/Badge";
 import { formatCurrency, formatDateTime, formatNumber } from "../lib/format";
+import { useTheme } from "../state/ThemeContext";
 
 export default function DashboardPage() {
+  const { theme } = useTheme();
+  const axisTick = { fontSize: 11, fill: theme === "dark" ? "#94a3b8" : "#334155" };
+  const gridStroke = theme === "dark" ? "#334155" : "#eef0f3";
+  const tooltipStyle =
+    theme === "dark"
+      ? { contentStyle: { background: "#1e293b", border: "1px solid #334155", color: "#e2e8f0" }, labelStyle: { color: "#e2e8f0" } }
+      : {};
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [aging, setAging] = useState<AgingBucketRow[]>([]);
   const [alerts, setAlerts] = useState<Alert[]>([]);
@@ -32,7 +40,7 @@ export default function DashboardPage() {
   }, []);
 
   if (loading || !summary) {
-    return <div className="text-slate-400 text-sm">Loading dashboard…</div>;
+    return <div className="text-slate-400 dark:text-slate-500 text-sm">Loading dashboard…</div>;
   }
 
   return (
@@ -59,47 +67,47 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 bg-white rounded-lg border border-slate-200 p-4">
-          <div className="text-sm font-semibold text-slate-800 mb-3">Inventory Aging by Bucket</div>
+        <div className="lg:col-span-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
+          <div className="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-3">Inventory Aging by Bucket</div>
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={aging}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#eef0f3" />
-              <XAxis dataKey="bucket_label" tick={{ fontSize: 11 }} />
-              <YAxis tick={{ fontSize: 11 }} />
-              <Tooltip formatter={(v) => (typeof v === "number" ? formatCurrency(v) : v)} />
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+              <XAxis dataKey="bucket_label" tick={axisTick} />
+              <YAxis tick={axisTick} />
+              <Tooltip formatter={(v) => (typeof v === "number" ? formatCurrency(v) : v)} {...tooltipStyle} />
               <Bar dataKey="inventory_value" fill="#4f46e5" radius={[3, 3, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white rounded-lg border border-slate-200 p-4">
+        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
           <div className="flex items-center justify-between mb-3">
-            <div className="text-sm font-semibold text-slate-800">Open Alerts</div>
+            <div className="text-sm font-semibold text-slate-800 dark:text-slate-100">Open Alerts</div>
             <Link to="/deadlines" className="text-xs text-indigo-600 hover:underline">
               View all
             </Link>
           </div>
           <div className="space-y-2 max-h-[260px] overflow-y-auto">
-            {alerts.length === 0 && <div className="text-xs text-slate-400">No open alerts.</div>}
+            {alerts.length === 0 && <div className="text-xs text-slate-400 dark:text-slate-500">No open alerts.</div>}
             {alerts.map((a) => (
-              <div key={a.id} className="border border-slate-100 rounded p-2">
+              <div key={a.id} className="border border-slate-100 dark:border-slate-700/60 rounded p-2">
                 <div className="flex items-center gap-2 mb-1">
                   <Badge label={a.severity} />
-                  <span className="text-xs text-slate-400">{formatDateTime(a.created_at)}</span>
+                  <span className="text-xs text-slate-400 dark:text-slate-500">{formatDateTime(a.created_at)}</span>
                 </div>
-                <div className="text-xs font-medium text-slate-800">{a.title}</div>
-                <div className="text-xs text-slate-500">{a.message}</div>
+                <div className="text-xs font-medium text-slate-800 dark:text-slate-100">{a.title}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400">{a.message}</div>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-slate-200 p-4 mt-4 overflow-x-auto">
-        <div className="text-sm font-semibold text-slate-800 mb-3">Deadlines Needing Attention</div>
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 mt-4 overflow-x-auto">
+        <div className="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-3">Deadlines Needing Attention</div>
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-xs text-slate-500 border-b border-slate-100">
+            <tr className="text-left text-xs text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700/60">
               <th className="py-2">Scope</th>
               <th className="py-2">Deadline</th>
               <th className="py-2">Days Remaining</th>
@@ -110,13 +118,13 @@ export default function DashboardPage() {
           <tbody>
             {deadlines.length === 0 && (
               <tr>
-                <td colSpan={5} className="py-3 text-xs text-slate-400">
+                <td colSpan={5} className="py-3 text-xs text-slate-400 dark:text-slate-500">
                   Nothing approaching or overdue.
                 </td>
               </tr>
             )}
             {deadlines.map((d) => (
-              <tr key={d.id} className="border-b border-slate-50">
+              <tr key={d.id} className="border-b border-slate-50 dark:border-slate-800">
                 <td className="py-2">
                   {d.scope_type}: {d.scope_label ?? d.scope_id}
                 </td>
@@ -125,7 +133,7 @@ export default function DashboardPage() {
                 <td className="py-2">
                   <Badge label={d.status} />
                 </td>
-                <td className="py-2 text-slate-500">{d.notes}</td>
+                <td className="py-2 text-slate-500 dark:text-slate-400">{d.notes}</td>
               </tr>
             ))}
           </tbody>

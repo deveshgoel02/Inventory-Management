@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../state/AuthContext";
+import ThemeToggle from "./ThemeToggle";
 import clsx from "clsx";
 
 const NAV_SECTIONS: { label: string; items: { to: string; label: string; permission?: string }[] }[] = [
@@ -63,7 +64,7 @@ export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-[#f6f7f9]">
+    <div className="flex h-screen bg-[#f6f7f9] dark:bg-[#0b1120]">
       {/* Backdrop: only rendered (and only intercepts taps) while the mobile drawer is open. */}
       {sidebarOpen && (
         <div
@@ -129,7 +130,7 @@ export default function Layout() {
             <div className="text-sm font-medium text-white truncate">{user?.full_name}</div>
             <div className="text-xs text-slate-400 truncate">{user?.role.name}</div>
           </NavLink>
-          <div className="mt-2 flex gap-3 text-xs">
+          <div className="mt-2 flex items-center gap-3 text-xs">
             <NavLink
               to="/profile"
               onClick={() => setSidebarOpen(false)}
@@ -140,6 +141,7 @@ export default function Layout() {
             <button onClick={logout} className="text-slate-400 hover:text-white underline underline-offset-2">
               Sign out
             </button>
+            <ThemeToggle className="ml-auto" />
           </div>
         </div>
       </aside>
@@ -153,7 +155,8 @@ export default function Layout() {
           >
             ☰
           </button>
-          <span className="text-sm font-medium truncate">{findPageLabel(location.pathname)}</span>
+          <span className="text-sm font-medium truncate flex-1">{findPageLabel(location.pathname)}</span>
+          <ThemeToggle />
         </header>
         <main className="flex-1 overflow-y-auto">
           <div className="max-w-[1400px] mx-auto p-4 md:p-6">

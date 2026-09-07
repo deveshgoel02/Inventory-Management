@@ -42,7 +42,7 @@ export default function InventoryPage() {
       <PageHeader title="Inventory" description="Live stock on hand, derived from the transaction ledger — never a manually maintained count." />
 
       <div className="flex flex-wrap gap-3 mb-4">
-        <select value={brandId} onChange={(e) => setBrandId(e.target.value)} className="border border-slate-300 rounded px-3 py-1.5 text-sm">
+        <select value={brandId} onChange={(e) => setBrandId(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-3 py-1.5 text-sm">
           <option value="">All Brands</option>
           {brands.map((b) => (
             <option key={b.id} value={b.id}>
@@ -50,7 +50,7 @@ export default function InventoryPage() {
             </option>
           ))}
         </select>
-        <select value={warehouseId} onChange={(e) => setWarehouseId(e.target.value)} className="border border-slate-300 rounded px-3 py-1.5 text-sm">
+        <select value={warehouseId} onChange={(e) => setWarehouseId(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-3 py-1.5 text-sm">
           <option value="">All Warehouses</option>
           {warehouses.map((w) => (
             <option key={w.id} value={w.id}>
@@ -63,38 +63,38 @@ export default function InventoryPage() {
           onChange={(e) => setSku(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && load()}
           placeholder="Search SKU…"
-          className="border border-slate-300 rounded px-3 py-1.5 text-sm w-56"
+          className="border border-slate-300 dark:border-slate-600 rounded px-3 py-1.5 text-sm w-56"
         />
         <button onClick={load} className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-3 py-1.5 rounded">
           Search
         </button>
         <button
           onClick={() => downloadFile("/reports/inventory/export", "inventory.csv", { format: "csv" })}
-          className="ml-auto text-sm border border-slate-300 rounded px-3 py-1.5 hover:bg-slate-50"
+          className="ml-auto text-sm border border-slate-300 dark:border-slate-600 rounded px-3 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-800/60"
         >
           Export CSV
         </button>
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-4">
-        <div className="bg-white border border-slate-200 rounded-lg p-3">
-          <div className="text-xs text-slate-500">Units shown</div>
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3">
+          <div className="text-xs text-slate-500 dark:text-slate-400">Units shown</div>
           <div className="text-lg font-semibold">{formatNumber(totalUnits)}</div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-lg p-3">
-          <div className="text-xs text-slate-500">Cost value</div>
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3">
+          <div className="text-xs text-slate-500 dark:text-slate-400">Cost value</div>
           <div className="text-lg font-semibold">{formatCurrency(totalCost)}</div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-lg p-3">
-          <div className="text-xs text-slate-500">Selling value</div>
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3">
+          <div className="text-xs text-slate-500 dark:text-slate-400">Selling value</div>
           <div className="text-lg font-semibold">{formatCurrency(totalSelling)}</div>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-xs text-slate-500 border-b border-slate-100 bg-slate-50">
+            <tr className="text-left text-xs text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/60">
               <th className="py-2 px-3">SKU</th>
               <th className="py-2 px-3">Product</th>
               <th className="py-2 px-3">Brand</th>
@@ -107,20 +107,20 @@ export default function InventoryPage() {
           <tbody>
             {loading && (
               <tr>
-                <td colSpan={7} className="py-4 px-3 text-slate-400">
+                <td colSpan={7} className="py-4 px-3 text-slate-400 dark:text-slate-500">
                   Loading…
                 </td>
               </tr>
             )}
             {!loading && rows.length === 0 && (
               <tr>
-                <td colSpan={7} className="py-4 px-3 text-slate-400">
+                <td colSpan={7} className="py-4 px-3 text-slate-400 dark:text-slate-500">
                   No stock found for these filters.
                 </td>
               </tr>
             )}
             {rows.map((r) => (
-              <tr key={`${r.variant_id}-${r.warehouse_id}`} className="border-b border-slate-50 hover:bg-slate-50">
+              <tr key={`${r.variant_id}-${r.warehouse_id}`} className="border-b border-slate-50 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/60">
                 <td className="py-2 px-3">
                   <Link to={`/inventory/${r.variant_id}`} className="text-indigo-600 hover:underline font-medium">
                     {r.sku}

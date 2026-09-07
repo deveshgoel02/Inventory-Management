@@ -19,7 +19,7 @@ export default function DataQualityPage() {
     api.get<DataQualityReport>("/data-quality").then((r) => setReport(r.data));
   }, []);
 
-  if (!report) return <div className="text-slate-400 text-sm">Loading…</div>;
+  if (!report) return <div className="text-slate-400 dark:text-slate-500 text-sm">Loading…</div>;
 
   const tone = report.score >= 90 ? "text-emerald-600" : report.score >= 70 ? "text-amber-600" : "text-red-600";
 
@@ -27,20 +27,20 @@ export default function DataQualityPage() {
     <div>
       <PageHeader title="Data Quality Center" description="Detects gaps and inconsistencies in the data behind every calculation on this platform." />
 
-      <div className="bg-white border border-slate-200 rounded-lg p-6 mb-6 text-center">
-        <div className="text-xs text-slate-500 uppercase tracking-wide">Overall Data Quality</div>
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6 text-center">
+        <div className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide">Overall Data Quality</div>
         <div className={`text-5xl font-bold mt-1 ${tone}`}>{report.score}%</div>
       </div>
 
       <div className="space-y-3">
         {Object.entries(report.issue_counts).map(([key, count]) => (
-          <div key={key} className="bg-white border border-slate-200 rounded-lg p-3">
+          <div key={key} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3">
             <div className="flex items-center justify-between mb-2">
-              <div className="text-sm font-medium text-slate-800">{LABELS[key] ?? key}</div>
+              <div className="text-sm font-medium text-slate-800 dark:text-slate-100">{LABELS[key] ?? key}</div>
               <div className={`text-sm font-semibold ${count === 0 ? "text-emerald-600" : "text-amber-600"}`}>{count}</div>
             </div>
             {count > 0 && (
-              <div className="text-xs text-slate-500 max-h-24 overflow-y-auto">
+              <div className="text-xs text-slate-500 dark:text-slate-400 max-h-24 overflow-y-auto">
                 {report.issues[key]?.slice(0, 20).map((issue) => (
                   <div key={`${issue.entity}-${issue.id}`}>
                     {issue.entity} — {issue.label}

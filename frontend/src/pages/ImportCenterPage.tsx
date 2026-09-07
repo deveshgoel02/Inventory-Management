@@ -134,14 +134,14 @@ export default function ImportCenterPage() {
     <div>
       <PageHeader title="Import Center" description="Upload a sales or purchases sheet — the type and column mapping are detected automatically. A clean file imports immediately; anything with errors stops for you to review." />
 
-      {error && <div className="mb-4 text-sm text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2">{error}</div>}
+      {error && <div className="mb-4 text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800/50 rounded px-3 py-2">{error}</div>}
 
       {!upload && (
-        <div className="bg-white border border-slate-200 rounded-lg p-4 mb-6">
-          <div className="text-sm font-semibold text-slate-800 mb-3">Upload File</div>
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 mb-6">
+          <div className="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-3">Upload File</div>
           <div className="flex flex-wrap gap-3 items-end">
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">File (.csv, .xlsx)</label>
+              <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">File (.csv, .xlsx)</label>
               <input
                 type="file"
                 accept=".csv,.xlsx,.xls"
@@ -149,14 +149,14 @@ export default function ImportCenterPage() {
                   setFile(e.target.files?.[0] ?? null);
                   setError(null);
                 }}
-                className="text-sm max-w-[70vw] text-slate-500 file:mr-3 file:cursor-pointer file:rounded file:border-0 file:bg-indigo-600 file:px-4 file:py-1.5 file:text-sm file:font-medium file:text-white hover:file:bg-indigo-700"
+                className="text-sm max-w-[70vw] text-slate-500 dark:text-slate-400 file:mr-3 file:cursor-pointer file:rounded file:border-0 file:bg-indigo-600 file:px-4 file:py-1.5 file:text-sm file:font-medium file:text-white hover:file:bg-indigo-700"
               />
             </div>
             <button onClick={doUpload} disabled={busy} className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-sm px-4 py-1.5 rounded">
               {busy ? "Uploading…" : "Upload"}
             </button>
             {busy && (
-              <span className="text-xs text-slate-400 self-end pb-2">
+              <span className="text-xs text-slate-400 dark:text-slate-500 self-end pb-2">
                 First request after idle can take up to a minute while the server wakes up.
               </span>
             )}
@@ -165,19 +165,19 @@ export default function ImportCenterPage() {
       )}
 
       {upload && !validation && (
-        <div className="bg-white border border-slate-200 rounded-lg p-4 mb-6">
-          <div className="text-sm font-semibold text-slate-800 mb-1">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 mb-6">
+          <div className="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-1">
             Review Column Mapping ({upload.filename}, {upload.total_rows} rows)
           </div>
-          <div className="text-xs text-slate-500 mb-3">
+          <div className="text-xs text-slate-500 dark:text-slate-400 mb-3">
             Detected as{" "}
-            <span className="font-medium text-slate-700">{TARGET_LABELS[upload.target_entity] ?? upload.target_entity}</span>
+            <span className="font-medium text-slate-700 dark:text-slate-200">{TARGET_LABELS[upload.target_entity] ?? upload.target_entity}</span>
             {upload.target_entity_auto_detected ? " automatically from the file's columns." : "."} Not right? Edit the
             mapping below, or go back and re-upload.
           </div>
           <table className="w-full text-sm mb-3">
             <thead>
-              <tr className="text-left text-xs text-slate-500 border-b border-slate-100">
+              <tr className="text-left text-xs text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700/60">
                 <th className="py-1.5">Field</th>
                 <th className="py-1.5">Mapped Column</th>
                 <th className="py-1.5">Confidence</th>
@@ -185,7 +185,7 @@ export default function ImportCenterPage() {
             </thead>
             <tbody>
               {Object.entries(upload.suggested_mapping).map(([field, info]) => (
-                <tr key={field} className="border-b border-slate-50">
+                <tr key={field} className="border-b border-slate-50 dark:border-slate-800">
                   <td className="py-1.5 font-medium">
                     {field.replace(/_/g, " ")}
                     {info.required && <span className="text-red-500"> *</span>}
@@ -194,7 +194,7 @@ export default function ImportCenterPage() {
                     <select
                       value={mapping[field] ?? ""}
                       onChange={(e) => setMapping({ ...mapping, [field]: e.target.value || null })}
-                      className="border border-slate-300 rounded px-2 py-1 text-sm"
+                      className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1 text-sm"
                     >
                       <option value="">— not mapped —</option>
                       {upload.headers.map((h) => (
@@ -215,7 +215,7 @@ export default function ImportCenterPage() {
             <button onClick={doValidate} disabled={busy} className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-sm px-4 py-1.5 rounded">
               {busy ? "Validating…" : "Validate"}
             </button>
-            <button onClick={reset} className="text-sm border border-slate-300 rounded px-3 py-1.5 hover:bg-slate-50">
+            <button onClick={reset} className="text-sm border border-slate-300 dark:border-slate-600 rounded px-3 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-800/60">
               Start Over
             </button>
           </div>
@@ -223,30 +223,30 @@ export default function ImportCenterPage() {
       )}
 
       {validation && !committed && (
-        <div className="bg-white border border-slate-200 rounded-lg p-4 mb-6">
-          <div className="text-sm font-semibold text-slate-800 mb-3">Validation Report</div>
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 mb-6">
+          <div className="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-3">Validation Report</div>
           <div className="grid grid-cols-4 gap-3 mb-4">
-            <div className="bg-slate-50 rounded p-2 text-center">
-              <div className="text-xs text-slate-500">Total Rows</div>
+            <div className="bg-slate-50 dark:bg-slate-800/60 rounded p-2 text-center">
+              <div className="text-xs text-slate-500 dark:text-slate-400">Total Rows</div>
               <div className="text-lg font-semibold">{validation.total_rows}</div>
             </div>
-            <div className="bg-emerald-50 rounded p-2 text-center">
-              <div className="text-xs text-slate-500">Valid</div>
-              <div className="text-lg font-semibold text-emerald-700">{validation.valid_rows}</div>
+            <div className="bg-emerald-50 dark:bg-emerald-900/30 rounded p-2 text-center">
+              <div className="text-xs text-slate-500 dark:text-slate-400">Valid</div>
+              <div className="text-lg font-semibold text-emerald-700 dark:text-emerald-300">{validation.valid_rows}</div>
             </div>
-            <div className="bg-red-50 rounded p-2 text-center">
-              <div className="text-xs text-slate-500">Invalid</div>
-              <div className="text-lg font-semibold text-red-700">{validation.invalid_rows}</div>
+            <div className="bg-red-50 dark:bg-red-900/30 rounded p-2 text-center">
+              <div className="text-xs text-slate-500 dark:text-slate-400">Invalid</div>
+              <div className="text-lg font-semibold text-red-700 dark:text-red-300">{validation.invalid_rows}</div>
             </div>
-            <div className="bg-amber-50 rounded p-2 text-center">
-              <div className="text-xs text-slate-500">Duplicates</div>
+            <div className="bg-amber-50 dark:bg-amber-900/30 rounded p-2 text-center">
+              <div className="text-xs text-slate-500 dark:text-slate-400">Duplicates</div>
               <div className="text-lg font-semibold text-amber-700">{validation.duplicate_rows}</div>
             </div>
           </div>
           {validation.issues.row_issues.length > 0 && (
-            <div className="max-h-64 overflow-y-auto border border-slate-100 rounded mb-4">
+            <div className="max-h-64 overflow-y-auto border border-slate-100 dark:border-slate-700/60 rounded mb-4">
               <table className="w-full text-xs">
-                <thead className="bg-slate-50">
+                <thead className="bg-slate-50 dark:bg-slate-800/60">
                   <tr>
                     <th className="py-1.5 px-2 text-left">Row</th>
                     <th className="py-1.5 px-2 text-left">Errors</th>
@@ -255,7 +255,7 @@ export default function ImportCenterPage() {
                 </thead>
                 <tbody>
                   {validation.issues.row_issues.map((ri) => (
-                    <tr key={ri.row_index} className="border-t border-slate-100">
+                    <tr key={ri.row_index} className="border-t border-slate-100 dark:border-slate-700/60">
                       <td className="py-1 px-2">{ri.row_index + 1}</td>
                       <td className="py-1 px-2 text-red-600">{ri.errors.join("; ")}</td>
                       <td className="py-1 px-2 text-amber-600">{ri.warnings.join("; ")}</td>
@@ -273,7 +273,7 @@ export default function ImportCenterPage() {
             >
               {busy ? "Importing…" : `Confirm & Import ${validation.valid_rows} Valid Row(s)`}
             </button>
-            <button onClick={reset} className="text-sm border border-slate-300 rounded px-3 py-1.5 hover:bg-slate-50">
+            <button onClick={reset} className="text-sm border border-slate-300 dark:border-slate-600 rounded px-3 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-800/60">
               Start Over
             </button>
           </div>
@@ -281,9 +281,9 @@ export default function ImportCenterPage() {
       )}
 
       {committed && (
-        <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-6">
+        <div className="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800/50 rounded-lg p-4 mb-6">
           <div className="text-sm font-semibold text-emerald-800 mb-1">Import Complete</div>
-          <div className="text-sm text-emerald-700">
+          <div className="text-sm text-emerald-700 dark:text-emerald-300">
             {committed.valid_rows} row(s) imported, {committed.invalid_rows} row(s) skipped.
           </div>
           <button onClick={reset} className="mt-2 text-sm border border-emerald-300 rounded px-3 py-1.5 hover:bg-emerald-100">
@@ -292,11 +292,11 @@ export default function ImportCenterPage() {
         </div>
       )}
 
-      <div className="text-sm font-semibold text-slate-800 mb-2">Recent Import Jobs</div>
-      <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
+      <div className="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-2">Recent Import Jobs</div>
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-xs text-slate-500 border-b border-slate-100 bg-slate-50">
+            <tr className="text-left text-xs text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/60">
               <th className="py-2 px-3">File</th>
               <th className="py-2 px-3">Target</th>
               <th className="py-2 px-3">Status</th>
@@ -306,7 +306,7 @@ export default function ImportCenterPage() {
           </thead>
           <tbody>
             {jobs.map((j) => (
-              <tr key={j.id} className="border-b border-slate-50">
+              <tr key={j.id} className="border-b border-slate-50 dark:border-slate-800">
                 <td className="py-2 px-3">{j.filename}</td>
                 <td className="py-2 px-3">{j.target_entity}</td>
                 <td className="py-2 px-3">

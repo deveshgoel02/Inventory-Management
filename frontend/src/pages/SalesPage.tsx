@@ -43,12 +43,12 @@ export default function SalesPage() {
           onError={setError}
         />
       )}
-      {error && <div className="mb-4 text-sm text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2">{error}</div>}
+      {error && <div className="mb-4 text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800/50 rounded px-3 py-2">{error}</div>}
 
-      <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-xs text-slate-500 border-b border-slate-100 bg-slate-50">
+            <tr className="text-left text-xs text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/60">
               <th className="py-2 px-3">Invoice</th>
               <th className="py-2 px-3">Date</th>
               <th className="py-2 px-3">Party Name</th>
@@ -58,10 +58,10 @@ export default function SalesPage() {
           </thead>
           <tbody>
             {sales.map((s) => (
-              <tr key={s.id} className="border-b border-slate-50">
+              <tr key={s.id} className="border-b border-slate-50 dark:border-slate-800">
                 <td className="py-2 px-3 font-medium">{s.invoice_number}</td>
                 <td className="py-2 px-3">{formatDate(s.sale_date)}</td>
-                <td className="py-2 px-3 text-slate-600">{s.customer_name ?? "—"}</td>
+                <td className="py-2 px-3 text-slate-600 dark:text-slate-300">{s.customer_name ?? "—"}</td>
                 <td className="py-2 px-3 text-right">{s.items?.length ?? 0}</td>
                 <td className="py-2 px-3 text-right">{formatCurrency(s.total)}</td>
               </tr>
@@ -124,30 +124,30 @@ function NewSaleForm({
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-lg p-4 mb-4">
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 mb-4">
       <div className="grid grid-cols-2 md:grid-cols-7 gap-3 items-end">
         <div className="col-span-2">
-          <label className="block text-xs font-medium text-slate-600 mb-1">SKU</label>
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">SKU</label>
           <div className="flex gap-1">
-            <input value={sku} onChange={(e) => setSku(e.target.value)} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full" />
-            <button onClick={lookupSku} className="text-xs border border-slate-300 rounded px-2 hover:bg-slate-50">
+            <input value={sku} onChange={(e) => setSku(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full" />
+            <button onClick={lookupSku} className="text-xs border border-slate-300 dark:border-slate-600 rounded px-2 hover:bg-slate-50 dark:hover:bg-slate-800/60">
               Find
             </button>
           </div>
           {variant && <div className="text-[11px] text-emerald-600 mt-1">{variant.sku} found</div>}
         </div>
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Party Name</label>
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Party Name</label>
           <input
             value={partyName}
             onChange={(e) => setPartyName(e.target.value)}
             placeholder="Walk-in / optional"
-            className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full"
+            className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full"
           />
         </div>
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Warehouse</label>
-          <select value={warehouseId} onChange={(e) => setWarehouseId(Number(e.target.value))} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full">
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Warehouse</label>
+          <select value={warehouseId} onChange={(e) => setWarehouseId(Number(e.target.value))} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full">
             <option value="">Select…</option>
             {warehouses.map((w) => (
               <option key={w.id} value={w.id}>
@@ -157,16 +157,16 @@ function NewSaleForm({
           </select>
         </div>
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Date</label>
-          <input type="date" value={saleDate} onChange={(e) => setSaleDate(e.target.value)} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full" />
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Date</label>
+          <input type="date" value={saleDate} onChange={(e) => setSaleDate(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full" />
         </div>
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Quantity</label>
-          <input type="number" min={1} value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full" />
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Quantity</label>
+          <input type="number" min={1} value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full" />
         </div>
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Unit Price</label>
-          <input type="number" min={0} value={unitPrice} onChange={(e) => setUnitPrice(Number(e.target.value))} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full" />
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Unit Price</label>
+          <input type="number" min={0} value={unitPrice} onChange={(e) => setUnitPrice(Number(e.target.value))} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full" />
         </div>
       </div>
       <button

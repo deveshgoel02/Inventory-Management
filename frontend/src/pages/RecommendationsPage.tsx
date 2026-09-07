@@ -44,10 +44,10 @@ export default function RecommendationsPage() {
         }
       />
 
-      <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-xs text-slate-500 border-b border-slate-100 bg-slate-50">
+            <tr className="text-left text-xs text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/60">
               <th className="py-2 px-3">SKU</th>
               <th className="py-2 px-3">Product</th>
               <th className="py-2 px-3 text-right">Current Stock</th>
@@ -61,10 +61,10 @@ export default function RecommendationsPage() {
           <tbody>
             {recs.map((r) => (
               <Fragment key={r.id}>
-                <tr className="border-b border-slate-50 hover:bg-slate-50">
+                <tr className="border-b border-slate-50 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/60">
                   <td className="py-2 px-3 font-medium">{r.sku}</td>
                   <td className="py-2 px-3">
-                    {r.product_name} <span className="text-slate-400">({r.brand_name})</span>
+                    {r.product_name} <span className="text-slate-400 dark:text-slate-500">({r.brand_name})</span>
                   </td>
                   <td className="py-2 px-3 text-right">{formatNumber(r.current_stock)}</td>
                   <td className="py-2 px-3 text-right font-semibold">{formatNumber(r.recommended_order_qty)}</td>
@@ -89,7 +89,7 @@ export default function RecommendationsPage() {
                         <button onClick={() => review(r.id, "ACCEPTED")} className="text-xs text-emerald-600 hover:underline mr-2">
                           Accept
                         </button>
-                        <button onClick={() => review(r.id, "DISMISSED")} className="text-xs text-slate-500 hover:underline">
+                        <button onClick={() => review(r.id, "DISMISSED")} className="text-xs text-slate-500 dark:text-slate-400 hover:underline">
                           Dismiss
                         </button>
                       </>
@@ -97,39 +97,39 @@ export default function RecommendationsPage() {
                   </td>
                 </tr>
                 {expanded === r.id && (
-                  <tr className="bg-slate-50 border-b border-slate-100">
+                  <tr className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-700/60">
                     <td colSpan={8} className="py-3 px-3">
-                      <div className="text-xs text-slate-600 space-y-1">
+                      <div className="text-xs text-slate-600 dark:text-slate-300 space-y-1">
                         <div>
                           <span className="font-medium">Formula:</span> {String(r.reasoning.formula)}
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
                           <div>
-                            <span className="text-slate-400">Daily sales rate:</span> {String(r.reasoning.daily_sales_rate)}
+                            <span className="text-slate-400 dark:text-slate-500">Daily sales rate:</span> {String(r.reasoning.daily_sales_rate)}
                           </div>
                           <div>
-                            <span className="text-slate-400">Lead time (days):</span> {String(r.reasoning.lead_time_days)}
+                            <span className="text-slate-400 dark:text-slate-500">Lead time (days):</span> {String(r.reasoning.lead_time_days)}
                           </div>
                           <div>
-                            <span className="text-slate-400">Forecast demand (lead time):</span>{" "}
+                            <span className="text-slate-400 dark:text-slate-500">Forecast demand (lead time):</span>{" "}
                             {String(r.reasoning.forecast_demand_during_lead_time)}
                           </div>
                           <div>
-                            <span className="text-slate-400">Safety stock:</span> {String(r.reasoning.safety_stock_units)}
+                            <span className="text-slate-400 dark:text-slate-500">Safety stock:</span> {String(r.reasoning.safety_stock_units)}
                           </div>
                           <div>
-                            <span className="text-slate-400">Incoming stock:</span> {String(r.reasoning.incoming_stock)}
+                            <span className="text-slate-400 dark:text-slate-500">Incoming stock:</span> {String(r.reasoning.incoming_stock)}
                           </div>
                           <div>
-                            <span className="text-slate-400">Days of cover:</span>{" "}
+                            <span className="text-slate-400 dark:text-slate-500">Days of cover:</span>{" "}
                             {String(r.reasoning.days_of_cover_at_current_stock ?? "n/a")}
                           </div>
                           <div>
-                            <span className="text-slate-400">MOQ applied:</span>{" "}
+                            <span className="text-slate-400 dark:text-slate-500">MOQ applied:</span>{" "}
                             {String(r.reasoning.minimum_order_quantity_applied ?? "none")}
                           </div>
                         </div>
-                        <div className="pt-1 text-slate-500">{String(r.reasoning.forecast_explanation)}</div>
+                        <div className="pt-1 text-slate-500 dark:text-slate-400">{String(r.reasoning.forecast_explanation)}</div>
                       </div>
                     </td>
                   </tr>

@@ -73,12 +73,12 @@ export default function AllotmentsPage() {
           onError={setError}
         />
       )}
-      {error && <div className="mb-4 text-sm text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2">{error}</div>}
+      {error && <div className="mb-4 text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800/50 rounded px-3 py-2">{error}</div>}
 
-      <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-xs text-slate-500 border-b border-slate-100 bg-slate-50">
+            <tr className="text-left text-xs text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/60">
               <th className="py-2 px-3">Salesman</th>
               <th className="py-2 px-3">SKU / Product</th>
               <th className="py-2 px-3">Warehouse</th>
@@ -94,29 +94,29 @@ export default function AllotmentsPage() {
           <tbody>
             {allotments.map((a) => (
               <Fragment key={a.id}>
-                <tr className="border-b border-slate-50 cursor-pointer hover:bg-slate-50" onClick={() => toggleExpand(a)}>
+                <tr className="border-b border-slate-50 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/60" onClick={() => toggleExpand(a)}>
                   <td className="py-2 px-3 font-medium">{a.salesman_name}</td>
                   <td className="py-2 px-3">
                     <div>{a.sku}</div>
-                    <div className="text-xs text-slate-500">{a.product_name}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">{a.product_name}</div>
                   </td>
-                  <td className="py-2 px-3 text-slate-600">{a.warehouse_name ?? "Any"}</td>
+                  <td className="py-2 px-3 text-slate-600 dark:text-slate-300">{a.warehouse_name ?? "Any"}</td>
                   <td className="py-2 px-3 text-right">{a.allotted_quantity}</td>
                   <td className="py-2 px-3 text-right">{a.executed_quantity}</td>
                   <td className="py-2 px-3 text-right">{a.remaining_quantity}</td>
                   <td className="py-2 px-3">
-                    <div className="w-24 h-2 bg-slate-100 rounded overflow-hidden">
+                    <div className="w-24 h-2 bg-slate-100 dark:bg-slate-700 rounded overflow-hidden">
                       <div
                         className={a.fulfillment_status === "FULFILLED" ? "h-full bg-emerald-500" : "h-full bg-indigo-500"}
                         style={{ width: `${Math.min(100, a.completion_pct)}%` }}
                       />
                     </div>
-                    <div className="text-[11px] text-slate-500 mt-0.5">{a.completion_pct}%</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{a.completion_pct}%</div>
                   </td>
                   <td className="py-2 px-3">
                     <Badge label={a.fulfillment_status} />
                   </td>
-                  <td className="py-2 px-3 text-slate-600">{a.due_date ? formatDate(a.due_date) : "—"}</td>
+                  <td className="py-2 px-3 text-slate-600 dark:text-slate-300">{a.due_date ? formatDate(a.due_date) : "—"}</td>
                   <td className="py-2 px-3 text-right">
                     {canManage && a.is_active && (
                       <button
@@ -132,19 +132,19 @@ export default function AllotmentsPage() {
                   </td>
                 </tr>
                 {expandedId === a.id && detail && (
-                  <tr className="bg-slate-50 border-b border-slate-100">
+                  <tr className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-700/60">
                     <td colSpan={10} className="py-3 px-3">
-                      <div className="text-xs font-medium text-slate-600 mb-2">
+                      <div className="text-xs font-medium text-slate-600 dark:text-slate-300 mb-2">
                         Execution detail — allotted {formatDate(detail.allotted_date)}
                         {detail.due_date ? ` through ${formatDate(detail.due_date)}` : ""}
                         {detail.notes ? ` · ${detail.notes}` : ""}
                       </div>
                       {detail.contributing_sales.length === 0 ? (
-                        <div className="text-sm text-slate-500">No sales recorded against this allotment yet.</div>
+                        <div className="text-sm text-slate-500 dark:text-slate-400">No sales recorded against this allotment yet.</div>
                       ) : (
                         <table className="w-full text-xs">
                           <thead>
-                            <tr className="text-left text-slate-500">
+                            <tr className="text-left text-slate-500 dark:text-slate-400">
                               <th className="py-1 pr-3">Invoice</th>
                               <th className="py-1 pr-3">Date</th>
                               <th className="py-1 pr-3 text-right">Quantity</th>
@@ -153,7 +153,7 @@ export default function AllotmentsPage() {
                           </thead>
                           <tbody>
                             {detail.contributing_sales.map((s) => (
-                              <tr key={s.sale_id} className="border-t border-slate-100">
+                              <tr key={s.sale_id} className="border-t border-slate-100 dark:border-slate-700/60">
                                 <td className="py-1 pr-3">{s.invoice_number}</td>
                                 <td className="py-1 pr-3">{formatDate(s.sale_date)}</td>
                                 <td className="py-1 pr-3 text-right">{s.quantity}</td>
@@ -170,7 +170,7 @@ export default function AllotmentsPage() {
             ))}
             {allotments.length === 0 && (
               <tr>
-                <td colSpan={10} className="py-6 px-3 text-center text-slate-400">
+                <td colSpan={10} className="py-6 px-3 text-center text-slate-400 dark:text-slate-500">
                   No allotments yet.
                 </td>
               </tr>
@@ -238,11 +238,11 @@ function NewAllotmentForm({
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-lg p-4 mb-4">
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 mb-4">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 items-end">
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Salesman</label>
-          <select value={salesmanId} onChange={(e) => setSalesmanId(Number(e.target.value))} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full">
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Salesman</label>
+          <select value={salesmanId} onChange={(e) => setSalesmanId(Number(e.target.value))} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full">
             <option value="">Select…</option>
             {salesmen.map((s) => (
               <option key={s.id} value={s.id}>
@@ -252,18 +252,18 @@ function NewAllotmentForm({
           </select>
         </div>
         <div className="col-span-2 md:col-span-1">
-          <label className="block text-xs font-medium text-slate-600 mb-1">SKU</label>
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">SKU</label>
           <div className="flex gap-1">
-            <input value={sku} onChange={(e) => setSku(e.target.value)} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full" />
-            <button onClick={lookupSku} className="text-xs border border-slate-300 rounded px-2 hover:bg-slate-50">
+            <input value={sku} onChange={(e) => setSku(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full" />
+            <button onClick={lookupSku} className="text-xs border border-slate-300 dark:border-slate-600 rounded px-2 hover:bg-slate-50 dark:hover:bg-slate-800/60">
               Find
             </button>
           </div>
           {variant && <div className="text-[11px] text-emerald-600 mt-1">{variant.sku} found</div>}
         </div>
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Warehouse</label>
-          <select value={warehouseId} onChange={(e) => setWarehouseId(Number(e.target.value))} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full">
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Warehouse</label>
+          <select value={warehouseId} onChange={(e) => setWarehouseId(Number(e.target.value))} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full">
             <option value="">Any</option>
             {warehouses.map((w) => (
               <option key={w.id} value={w.id}>
@@ -273,20 +273,20 @@ function NewAllotmentForm({
           </select>
         </div>
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Quantity</label>
-          <input type="number" min={1} value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full" />
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Quantity</label>
+          <input type="number" min={1} value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full" />
         </div>
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Allotted From</label>
-          <input type="date" value={allottedDate} onChange={(e) => setAllottedDate(e.target.value)} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full" />
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Allotted From</label>
+          <input type="date" value={allottedDate} onChange={(e) => setAllottedDate(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full" />
         </div>
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Due Date (optional)</label>
-          <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full" />
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Due Date (optional)</label>
+          <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full" />
         </div>
         <div className="col-span-2 md:col-span-4">
-          <label className="block text-xs font-medium text-slate-600 mb-1">Notes (optional)</label>
-          <input value={notes} onChange={(e) => setNotes(e.target.value)} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full" />
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Notes (optional)</label>
+          <input value={notes} onChange={(e) => setNotes(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full" />
         </div>
       </div>
       <button

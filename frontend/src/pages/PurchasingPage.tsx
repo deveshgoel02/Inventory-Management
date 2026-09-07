@@ -47,12 +47,12 @@ export default function PurchasingPage() {
           onError={setError}
         />
       )}
-      {error && <div className="mb-4 text-sm text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2">{error}</div>}
+      {error && <div className="mb-4 text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800/50 rounded px-3 py-2">{error}</div>}
 
-      <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto mb-6">
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-x-auto mb-6">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-xs text-slate-500 border-b border-slate-100 bg-slate-50">
+            <tr className="text-left text-xs text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/60">
               <th className="py-2 px-3">PO Number</th>
               <th className="py-2 px-3">Order Date</th>
               <th className="py-2 px-3">Expected</th>
@@ -62,7 +62,7 @@ export default function PurchasingPage() {
           </thead>
           <tbody>
             {pos.map((po) => (
-              <tr key={po.id} className="border-b border-slate-50">
+              <tr key={po.id} className="border-b border-slate-50 dark:border-slate-800">
                 <td className="py-2 px-3 font-medium">{po.po_number}</td>
                 <td className="py-2 px-3">{formatDate(po.order_date)}</td>
                 <td className="py-2 px-3">{formatDate(po.expected_date)}</td>
@@ -76,11 +76,11 @@ export default function PurchasingPage() {
         </table>
       </div>
 
-      <div className="text-sm font-semibold text-slate-800 mb-2">Suppliers</div>
-      <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
+      <div className="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-2">Suppliers</div>
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-xs text-slate-500 border-b border-slate-100 bg-slate-50">
+            <tr className="text-left text-xs text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/60">
               <th className="py-2 px-3">Name</th>
               <th className="py-2 px-3">Phone</th>
               <th className="py-2 px-3 text-right">Lead Time (days)</th>
@@ -88,7 +88,7 @@ export default function PurchasingPage() {
           </thead>
           <tbody>
             {suppliers.map((s) => (
-              <tr key={s.id} className="border-b border-slate-50">
+              <tr key={s.id} className="border-b border-slate-50 dark:border-slate-800">
                 <td className="py-2 px-3">{s.name}</td>
                 <td className="py-2 px-3">{s.phone ?? "—"}</td>
                 <td className="py-2 px-3 text-right">{s.lead_time_days ?? "—"}</td>
@@ -154,11 +154,11 @@ function NewPoForm({
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-lg p-4 mb-4">
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 mb-4">
       <div className="grid grid-cols-2 md:grid-cols-6 gap-3 items-end">
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Supplier</label>
-          <select value={supplierId} onChange={(e) => setSupplierId(Number(e.target.value))} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full">
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Supplier</label>
+          <select value={supplierId} onChange={(e) => setSupplierId(Number(e.target.value))} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full">
             <option value="">Select…</option>
             {suppliers.map((s) => (
               <option key={s.id} value={s.id}>
@@ -168,8 +168,8 @@ function NewPoForm({
           </select>
         </div>
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Warehouse</label>
-          <select value={warehouseId} onChange={(e) => setWarehouseId(Number(e.target.value))} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full">
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Warehouse</label>
+          <select value={warehouseId} onChange={(e) => setWarehouseId(Number(e.target.value))} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full">
             <option value="">Select…</option>
             {warehouses.map((w) => (
               <option key={w.id} value={w.id}>
@@ -179,25 +179,25 @@ function NewPoForm({
           </select>
         </div>
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Order Date</label>
-          <input type="date" value={orderDate} onChange={(e) => setOrderDate(e.target.value)} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full" />
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Order Date</label>
+          <input type="date" value={orderDate} onChange={(e) => setOrderDate(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full" />
         </div>
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">SKU</label>
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">SKU</label>
           <div className="flex gap-1">
-            <input value={sku} onChange={(e) => setSku(e.target.value)} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full" />
-            <button onClick={lookupSku} className="text-xs border border-slate-300 rounded px-2 hover:bg-slate-50">
+            <input value={sku} onChange={(e) => setSku(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full" />
+            <button onClick={lookupSku} className="text-xs border border-slate-300 dark:border-slate-600 rounded px-2 hover:bg-slate-50 dark:hover:bg-slate-800/60">
               Find
             </button>
           </div>
         </div>
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Quantity</label>
-          <input type="number" min={1} value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full" />
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Quantity</label>
+          <input type="number" min={1} value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full" />
         </div>
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Unit Cost</label>
-          <input type="number" min={0} value={unitCost} onChange={(e) => setUnitCost(Number(e.target.value))} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full" />
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Unit Cost</label>
+          <input type="number" min={0} value={unitCost} onChange={(e) => setUnitCost(Number(e.target.value))} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full" />
         </div>
       </div>
       <button onClick={submit} disabled={submitting} className="mt-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-sm px-4 py-1.5 rounded">

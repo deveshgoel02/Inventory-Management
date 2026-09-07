@@ -57,26 +57,26 @@ export default function UsersPage() {
         }
       />
 
-      {error && <div className="mb-4 text-sm text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2">{error}</div>}
+      {error && <div className="mb-4 text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800/50 rounded px-3 py-2">{error}</div>}
 
       {showForm && (
-        <div className="bg-white border border-slate-200 rounded-lg p-4 mb-4">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 mb-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 items-end">
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">Email</label>
-              <input value={email} onChange={(e) => setEmail(e.target.value)} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full" />
+              <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Email</label>
+              <input value={email} onChange={(e) => setEmail(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">Full Name</label>
-              <input value={fullName} onChange={(e) => setFullName(e.target.value)} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full" />
+              <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Full Name</label>
+              <input value={fullName} onChange={(e) => setFullName(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">Password</label>
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full" />
+              <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Password</label>
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">Role</label>
-              <select value={roleId} onChange={(e) => setRoleId(Number(e.target.value))} className="border border-slate-300 rounded px-2 py-1.5 text-sm w-full">
+              <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Role</label>
+              <select value={roleId} onChange={(e) => setRoleId(Number(e.target.value))} className="border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm w-full">
                 <option value="">Select…</option>
                 {roles.map((r) => (
                   <option key={r.id} value={r.id}>
@@ -92,10 +92,10 @@ export default function UsersPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-xs text-slate-500 border-b border-slate-100 bg-slate-50">
+            <tr className="text-left text-xs text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/60">
               <th className="py-2 px-3">Name</th>
               <th className="py-2 px-3">Email</th>
               <th className="py-2 px-3">Role</th>
@@ -105,7 +105,7 @@ export default function UsersPage() {
           </thead>
           <tbody>
             {users.map((u) => (
-              <tr key={u.id} className="border-b border-slate-50">
+              <tr key={u.id} className="border-b border-slate-50 dark:border-slate-800">
                 <td className="py-2 px-3">{u.full_name}</td>
                 <td className="py-2 px-3">{u.email}</td>
                 <td className="py-2 px-3">{u.role.name}</td>

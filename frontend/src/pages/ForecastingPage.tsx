@@ -59,10 +59,10 @@ export default function ForecastingPage() {
         }
       />
 
-      <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-xs text-slate-500 border-b border-slate-100 bg-slate-50">
+            <tr className="text-left text-xs text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/60">
               <th className="py-2 px-3">SKU</th>
               <th className="py-2 px-3">Model</th>
               <th className="py-2 px-3 text-right">Hist. Avg/day</th>
@@ -77,19 +77,19 @@ export default function ForecastingPage() {
           <tbody>
             {loading && (
               <tr>
-                <td colSpan={9} className="py-4 px-3 text-slate-400">
+                <td colSpan={9} className="py-4 px-3 text-slate-400 dark:text-slate-500">
                   Loading forecasts…
                 </td>
               </tr>
             )}
             {rows.map((r) => (
-              <tr key={r.variant_id} className="border-b border-slate-50 hover:bg-slate-50">
+              <tr key={r.variant_id} className="border-b border-slate-50 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/60">
                 <td className="py-2 px-3">
                   <Link to={`/inventory/${r.variant_id}`} className="text-indigo-600 hover:underline font-medium">
                     {r.sku}
                   </Link>
                 </td>
-                <td className="py-2 px-3 text-slate-500 text-xs">{r.model_name.replace(/_/g, " ")}</td>
+                <td className="py-2 px-3 text-slate-500 dark:text-slate-400 text-xs">{r.model_name.replace(/_/g, " ")}</td>
                 <td className="py-2 px-3 text-right">{formatNumber(r.historical_avg_daily_sales)}</td>
                 <td className="py-2 px-3 text-right">{formatNumber(r.recent_avg_daily_sales)}</td>
                 <td className="py-2 px-3 text-right">{formatNumber(r.forecasts["30"])}</td>
@@ -106,7 +106,7 @@ export default function ForecastingPage() {
           </tbody>
         </table>
       </div>
-      <p className="text-xs text-slate-400 mt-3 italic">
+      <p className="text-xs text-slate-400 dark:text-slate-500 mt-3 italic">
         Recommendations are estimates based on historical data and configured assumptions. Click any SKU for the full explanation and accuracy backtest.
       </p>
     </div>

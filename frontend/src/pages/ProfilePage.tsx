@@ -104,44 +104,44 @@ export default function ProfilePage() {
       <PageHeader title="Profile" description="Your account details and password." />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="bg-white border border-slate-200 rounded-lg p-4">
-          <div className="text-sm font-semibold text-slate-800 mb-3">Account Details</div>
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+          <div className="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-3">Account Details</div>
 
           {profileSuccess && (
-            <div className="mb-3 text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded px-3 py-2">
+            <div className="mb-3 text-sm text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800/50 rounded px-3 py-2">
               Profile updated successfully.
             </div>
           )}
-          {profileError && <div className="mb-3 text-sm text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2">{profileError}</div>}
+          {profileError && <div className="mb-3 text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800/50 rounded px-3 py-2">{profileError}</div>}
 
           <form onSubmit={saveProfile} className="space-y-3">
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">Full Name</label>
+              <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Full Name</label>
               <input
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 required
-                className="w-full border border-slate-300 rounded px-3 py-1.5 text-sm"
+                className="w-full border border-slate-300 dark:border-slate-600 rounded px-3 py-1.5 text-sm"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">Email</label>
+              <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full border border-slate-300 rounded px-3 py-1.5 text-sm"
+                className="w-full border border-slate-300 dark:border-slate-600 rounded px-3 py-1.5 text-sm"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">Role</label>
+              <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Role</label>
               {canManageUsers ? (
                 <>
                   <select
                     value={roleId}
                     onChange={(e) => setRoleId(Number(e.target.value))}
-                    className="w-full border border-slate-300 rounded px-3 py-1.5 text-sm"
+                    className="w-full border border-slate-300 dark:border-slate-600 rounded px-3 py-1.5 text-sm"
                   >
                     {roles.map((r) => (
                       <option key={r.id} value={r.id}>
@@ -149,14 +149,14 @@ export default function ProfilePage() {
                       </option>
                     ))}
                   </select>
-                  <p className="text-[11px] text-slate-400 mt-1">
+                  <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
                     Changing your own role takes effect immediately. You can't remove the last active admin.
                   </p>
                 </>
               ) : (
                 <div>
                   <Badge label={user.role.name} />
-                  <p className="text-[11px] text-slate-400 mt-1">Only an admin can change roles.</p>
+                  <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">Only an admin can change roles.</p>
                 </div>
               )}
             </div>
@@ -169,11 +169,11 @@ export default function ProfilePage() {
             </button>
           </form>
 
-          <div className="mt-4 pt-4 border-t border-slate-100">
-            <div className="text-xs text-slate-500 mb-1">Permissions</div>
+          <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700/60">
+            <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">Permissions</div>
             <div className="flex flex-wrap gap-1">
               {user.permissions.map((p) => (
-                <span key={p} className="text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded">
+                <span key={p} className="text-[11px] bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded">
                   {p}
                 </span>
               ))}
@@ -181,30 +181,30 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-lg p-4">
-          <div className="text-sm font-semibold text-slate-800 mb-3">Change Password</div>
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+          <div className="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-3">Change Password</div>
 
           {passwordSuccess && (
-            <div className="mb-3 text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded px-3 py-2">
+            <div className="mb-3 text-sm text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800/50 rounded px-3 py-2">
               Password changed successfully.
             </div>
           )}
-          {passwordError && <div className="mb-3 text-sm text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2">{passwordError}</div>}
+          {passwordError && <div className="mb-3 text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800/50 rounded px-3 py-2">{passwordError}</div>}
 
           <form onSubmit={changePassword} className="space-y-3">
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">Current Password</label>
+              <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Current Password</label>
               <input
                 type="password"
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 required
                 autoComplete="current-password"
-                className="w-full border border-slate-300 rounded px-3 py-1.5 text-sm"
+                className="w-full border border-slate-300 dark:border-slate-600 rounded px-3 py-1.5 text-sm"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">New Password</label>
+              <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">New Password</label>
               <input
                 type="password"
                 value={newPassword}
@@ -212,19 +212,19 @@ export default function ProfilePage() {
                 required
                 minLength={8}
                 autoComplete="new-password"
-                className="w-full border border-slate-300 rounded px-3 py-1.5 text-sm"
+                className="w-full border border-slate-300 dark:border-slate-600 rounded px-3 py-1.5 text-sm"
               />
-              <p className="text-[11px] text-slate-400 mt-1">At least 8 characters.</p>
+              <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">At least 8 characters.</p>
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">Confirm New Password</label>
+              <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Confirm New Password</label>
               <input
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 autoComplete="new-password"
-                className="w-full border border-slate-300 rounded px-3 py-1.5 text-sm"
+                className="w-full border border-slate-300 dark:border-slate-600 rounded px-3 py-1.5 text-sm"
               />
             </div>
             <button

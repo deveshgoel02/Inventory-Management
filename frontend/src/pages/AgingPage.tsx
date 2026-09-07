@@ -4,8 +4,16 @@ import { api, downloadFile } from "../api/client";
 import type { AgingBucketRow, AgingDetailRow } from "../api/types";
 import PageHeader from "../components/PageHeader";
 import { formatCurrency, formatDate, formatNumber } from "../lib/format";
+import { useTheme } from "../state/ThemeContext";
 
 export default function AgingPage() {
+  const { theme } = useTheme();
+  const axisTick = { fontSize: 11, fill: theme === "dark" ? "#94a3b8" : "#334155" };
+  const gridStroke = theme === "dark" ? "#334155" : "#eef0f3";
+  const tooltipStyle =
+    theme === "dark"
+      ? { contentStyle: { background: "#1e293b", border: "1px solid #334155", color: "#e2e8f0" }, labelStyle: { color: "#e2e8f0" } }
+      : {};
   const [summary, setSummary] = useState<AgingBucketRow[]>([]);
   const [detail, setDetail] = useState<AgingDetailRow[]>([]);
   const [bucketFilter, setBucketFilter] = useState<string>("");
@@ -25,20 +33,20 @@ export default function AgingPage() {
         actions={
           <button
             onClick={() => downloadFile("/reports/aging/export", "aging.csv", { format: "csv" })}
-            className="text-sm border border-slate-300 rounded px-3 py-1.5 hover:bg-slate-50"
+            className="text-sm border border-slate-300 dark:border-slate-600 rounded px-3 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-800/60"
           >
             Export CSV
           </button>
         }
       />
 
-      <div className="bg-white border border-slate-200 rounded-lg p-4 mb-5">
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 mb-5">
         <ResponsiveContainer width="100%" height={260}>
           <BarChart data={summary} onClick={(state) => state?.activeLabel && setBucketFilter(state.activeLabel as string)}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#eef0f3" />
-            <XAxis dataKey="bucket_label" tick={{ fontSize: 11 }} />
-            <YAxis tick={{ fontSize: 11 }} />
-            <Tooltip formatter={(v) => (typeof v === "number" ? formatCurrency(v) : v)} />
+            <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+            <XAxis dataKey="bucket_label" tick={axisTick} />
+            <YAxis tick={axisTick} />
+            <Tooltip formatter={(v) => (typeof v === "number" ? formatCurrency(v) : v)} {...tooltipStyle} />
             <Bar dataKey="inventory_value" fill="#4f46e5" radius={[3, 3, 0, 0]} cursor="pointer" />
           </BarChart>
         </ResponsiveContainer>
@@ -47,20 +55,20 @@ export default function AgingPage() {
             <button
               key={b.bucket_label}
               onClick={() => setBucketFilter(bucketFilter === b.bucket_label ? "" : b.bucket_label)}
-              className={`rounded p-2 border text-left ${bucketFilter === b.bucket_label ? "border-indigo-500 bg-indigo-50" : "border-slate-100"}`}
+              className={`rounded p-2 border text-left ${bucketFilter === b.bucket_label ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30" : "border-slate-100 dark:border-slate-700/60"}`}
             >
-              <div className="text-[11px] text-slate-500">{b.bucket_label}</div>
+              <div className="text-[11px] text-slate-500 dark:text-slate-400">{b.bucket_label}</div>
               <div className="text-sm font-semibold">{formatNumber(b.sku_count)} SKUs</div>
-              <div className="text-[11px] text-slate-500">{formatCurrency(b.inventory_value)}</div>
+              <div className="text-[11px] text-slate-500 dark:text-slate-400">{formatCurrency(b.inventory_value)}</div>
             </button>
           ))}
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-xs text-slate-500 border-b border-slate-100 bg-slate-50">
+            <tr className="text-left text-xs text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/60">
               <th className="py-2 px-3">SKU</th>
               <th className="py-2 px-3">Product</th>
               <th className="py-2 px-3">Brand</th>
@@ -74,7 +82,7 @@ export default function AgingPage() {
           </thead>
           <tbody>
             {filteredDetail.slice(0, 300).map((row) => (
-              <tr key={row.batch_id} className="border-b border-slate-50">
+              <tr key={row.batch_id} className="border-b border-slate-50 dark:border-slate-800">
                 <td className="py-2 px-3 font-medium">{row.sku}</td>
                 <td className="py-2 px-3">{row.product_name}</td>
                 <td className="py-2 px-3">{row.brand_name}</td>
